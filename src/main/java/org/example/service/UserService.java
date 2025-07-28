@@ -19,13 +19,13 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-
+    //TODO тут будет случай когда логин существует, соответсвенно это ошибка и ее надо выводить на экран!
     public UserResponseDto create(UserRequestDto userRequestDto) {
-       User user = UserMapper.INSTANCE.toEntity(userRequestDto);
-       User savedUser = userRepository.create(user);
-       log.info("User created with id: {}", savedUser.getId());
 
-       return UserMapper.INSTANCE.toResponseDto(savedUser);
+        User user = UserMapper.INSTANCE.toEntity(userRequestDto);
+        User savedUser = userRepository.create(user);
+        log.info("User created with id: {}", savedUser.getId());
+        return UserMapper.INSTANCE.toResponseDto(savedUser);
     }
 
 }

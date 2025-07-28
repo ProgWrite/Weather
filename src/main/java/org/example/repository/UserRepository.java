@@ -2,6 +2,7 @@ package org.example.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.exceptions.DatabaseException;
 import org.example.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,13 +15,19 @@ public class UserRepository {
 
     private final SessionFactory sessionFactory;
 
-    // TODO мб возвращать тип лонг это не очень
+
     public User create(User user) {
-        Session session = sessionFactory.getCurrentSession();
-        log.info("Saving user {}", user);
-        session.persist(user);
-        session.flush();
-        return user;
+
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            log.info("Saving user {}", user);
+            session.persist(user);
+            session.flush();
+            return user;
+        } catch (RuntimeException e) {
+            log.error("Error while saving user {}", user, e);
+            throw new DatabaseException("User creation failed");
+        }
     }
 
 }
