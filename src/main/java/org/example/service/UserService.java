@@ -10,6 +10,8 @@ import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @Transactional
@@ -26,6 +28,16 @@ public class UserService {
         User savedUser = userRepository.create(user);
         log.info("User created with id: {}", savedUser.getId());
         return UserMapper.INSTANCE.toResponseDto(savedUser);
+    }
+
+    public boolean existsByLogin(String login) {
+        List<User> users = userRepository.findAll();
+        for(User user : users) {
+            if(user.getLogin().equals(login)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

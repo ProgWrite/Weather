@@ -1,8 +1,12 @@
 package org.example.dto;
 
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.example.validation.UniqueLogin;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,9 +15,12 @@ import lombok.*;
 @ToString
 public class UserRequestDto {
 
+
+
     @NotBlank(message = "The name can't be blank")
     @Size(min = 3, max = 30, message = "The name must be between 3 and 30 characters long")
     @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ]+$", message = "The name must contain only letters of the English or Russian alphabet")
+    @UniqueLogin(message = "User with this login already exists")
     private String login;
 
 

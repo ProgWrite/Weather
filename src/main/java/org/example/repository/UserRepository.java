@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -17,7 +19,6 @@ public class UserRepository {
 
 
     public User create(User user) {
-
         try {
             Session session = sessionFactory.getCurrentSession();
             log.info("Saving user {}", user);
@@ -29,5 +30,12 @@ public class UserRepository {
             throw new DatabaseException("User creation failed");
         }
     }
+
+    public List<User> findAll() {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM User", User.class)
+                .getResultList();
+    }
+
 
 }
