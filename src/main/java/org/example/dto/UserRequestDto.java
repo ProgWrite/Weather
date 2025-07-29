@@ -12,16 +12,16 @@ import lombok.*;
 @ToString
 public class UserRequestDto {
 
-    @NotBlank
+    @NotBlank(message = "The name can't be blank")
     @Size(min = 3, max = 30, message = "The name must be between 3 and 30 characters long")
     private String login;
 
 
-    @NotBlank
+    @NotBlank(message = "The password can't be blank")
     @Size(min = 3, max = 30, message = "The password must be between 3 and 30 characters long")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "The password can't be blank")
     private String confirmPassword;
 
 }

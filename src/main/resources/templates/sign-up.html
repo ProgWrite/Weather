@@ -29,6 +29,13 @@
 
 </form>
 
+    <div th:if="${errors}">
+        <p style="color: red" th:each="error : ${errors}" th:text="${error.defaultMessage}">Error message</p>
+    </div>
+
+
+
+
     <p>Уже есть аккаунт? <a th:href="@{/sign-in}">Войдите</a></p>
     <a th:href="@{/}">Вернуться на главную страницу</a>
 
