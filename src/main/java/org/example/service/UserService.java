@@ -2,7 +2,7 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.dto.UserRequestDto;
+import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
 import org.example.mapper.UserMapper;
 import org.example.model.User;
@@ -21,19 +21,20 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    //TODO тут будет случай когда логин существует, соответсвенно это ошибка и ее надо выводить на экран!
-    public UserResponseDto create(UserRequestDto userRequestDto) {
 
-        User user = UserMapper.INSTANCE.toEntity(userRequestDto);
+    public UserResponseDto create(UserRegistrationRequestDto userRegistrationRequestDto) {
+        User user = UserMapper.INSTANCE.toEntity(userRegistrationRequestDto);
         User savedUser = userRepository.create(user);
         log.info("User created with id: {}", savedUser.getId());
         return UserMapper.INSTANCE.toResponseDto(savedUser);
     }
 
+
     public boolean existsByLogin(String login) {
         List<User> users = userRepository.findAll();
-        for(User user : users) {
-            if(user.getLogin().equals(login)) {
+
+        for (User user : users) {
+            if (user.getLogin().equals(login)) {
                 return false;
             }
         }

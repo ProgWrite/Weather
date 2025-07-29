@@ -8,22 +8,26 @@
 <body>
 <h1>Здесь вы можете войти на свою страницу</h1>
 
-<form th:action="@{/sign-in}" method="post">
+<form th:action="@{/sign-in}" method="post" th:object="${user}">
 
     <div>
         <label for="username">Login:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" th:field="*{login}" required>
     </div>
 
     <div>
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" th:field="*{password}" required>
     </div>
 
 
     <button type="submit">Войти</button>
 
 </form>
+
+<div th:if="${errors}">
+    <p style="color: red" th:each="error : ${errors}" th:text="${error.defaultMessage}">Error message</p>
+</div>
 
     <p>Нет аккаунта? <a th:href="@{sign-up}">Зарегистрируйтесь</a></p>
     <a th:href="@{/}">Вернуться на главную страницу</a>

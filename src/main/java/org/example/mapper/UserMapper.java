@@ -1,7 +1,7 @@
 package org.example.mapper;
 
 
-import org.example.dto.UserRequestDto;
+import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
 import org.example.model.User;
 import org.mapstruct.Mapper;
@@ -14,7 +14,7 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    User toEntity(UserRequestDto userRequestDto);
+    User toEntity(UserRegistrationRequestDto userRegistrationRequestDto);
 
     UserResponseDto toResponseDto(User user);
 

@@ -13,14 +13,13 @@ import org.example.validation.UniqueLogin;
 @Getter
 @Setter
 @ToString
-public class UserRequestDto {
-
+public class UserRegistrationRequestDto {
 
 
     @NotBlank(message = "The name can't be blank")
     @Size(min = 3, max = 30, message = "The name must be between 3 and 30 characters long")
     @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ]+$", message = "The name must contain only letters of the English or Russian alphabet")
-    @UniqueLogin(message = "User with this login already exists")
+    @UniqueLogin
     private String login;
 
 

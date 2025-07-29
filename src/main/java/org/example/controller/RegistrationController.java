@@ -3,7 +3,7 @@ package org.example.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.dto.UserRequestDto;
+import org.example.dto.UserRegistrationRequestDto;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,13 +25,13 @@ public class RegistrationController {
     @GetMapping()
     public String signUp(Model model) {
         if (!model.containsAttribute("user")) {
-            model.addAttribute("user", new UserRequestDto());
+            model.addAttribute("user", new UserRegistrationRequestDto());
         }
         return "sign-up";
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute @Valid UserRequestDto user,
+    public String createUser(@ModelAttribute @Valid UserRegistrationRequestDto user,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
