@@ -36,9 +36,10 @@ public class AuthorizationController {
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes){
+
+        redirectAttributes.addFlashAttribute("user", user);
+
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
-            redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/sign-in";
         }
@@ -48,7 +49,6 @@ public class AuthorizationController {
             return "redirect:/checker";
         }catch (WrongPasswordException exception){
             redirectAttributes.addFlashAttribute("authorizeError", exception.getMessage());
-            redirectAttributes.addFlashAttribute("user", user);
             return "redirect:/sign-in";
         }
 

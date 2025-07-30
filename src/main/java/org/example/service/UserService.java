@@ -42,6 +42,8 @@ public class UserService {
         return true;
     }
 
+
+    //TODO норм ли делать метод сервиса boolean?
     public boolean isPasswordCorrect(UserAuthorizationRequestDto userAuthorizationRequestDto) {
 
         String login = userAuthorizationRequestDto.getLogin();

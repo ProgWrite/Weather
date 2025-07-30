@@ -35,7 +35,6 @@ public class RegistrationController {
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", bindingResult);
             redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/sign-up";
