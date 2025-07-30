@@ -25,6 +25,11 @@
 
 </form>
 
+<div th:if="${authorizeError}" style="color: red">
+    <p th:text="${authorizeError}">Ошибка аутентификации</p>
+</div>
+
+
 <div th:if="${errors}">
     <p style="color: red" th:each="error : ${errors}" th:text="${error.defaultMessage}">Error message</p>
 </div>

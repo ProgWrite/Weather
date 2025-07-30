@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -35,6 +36,20 @@ public class UserRepository {
         return sessionFactory.getCurrentSession()
                 .createQuery("FROM User", User.class)
                 .getResultList();
+    }
+
+    public Optional<User> findByLogin(String login) {
+       try{
+           Session session = sessionFactory.getCurrentSession();
+           User user = session.createQuery("FROM User WHERE login = :login", User.class)
+                   .setParameter("login", login)
+                   .uniqueResult();
+           log.info("Found user with login{}", login);
+           return Optional.of(user);
+       }catch (RuntimeException e){
+           log.error("Error while finding user with login {}", login, e);
+           throw new DatabaseException("User not found");
+       }
     }
 
 }

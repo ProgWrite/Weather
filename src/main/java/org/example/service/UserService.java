@@ -2,8 +2,10 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
+import org.example.exceptions.WrongPasswordException;
 import org.example.mapper.UserMapper;
 import org.example.model.User;
 import org.example.repository.UserRepository;
@@ -29,7 +31,6 @@ public class UserService {
         return UserMapper.INSTANCE.toResponseDto(savedUser);
     }
 
-
     public boolean existsByLogin(String login) {
         List<User> users = userRepository.findAll();
 
@@ -40,5 +41,18 @@ public class UserService {
         }
         return true;
     }
+
+    public boolean isPasswordCorrect(UserAuthorizationRequestDto userAuthorizationRequestDto) {
+
+        String login = userAuthorizationRequestDto.getLogin();
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new WrongPasswordException("User not found"));
+
+        if (user.getPassword().equals(userAuthorizationRequestDto.getPassword())) {
+            return true;
+        }
+        throw new WrongPasswordException("Wrong password");
+    }
+
 
 }

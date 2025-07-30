@@ -1,6 +1,7 @@
 package org.example.mapper;
 
 
+import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
 import org.example.model.User;
@@ -15,6 +16,8 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     User toEntity(UserRegistrationRequestDto userRegistrationRequestDto);
+
+    User toEntity(UserAuthorizationRequestDto userAuthorizationRequestDto);
 
     UserResponseDto toResponseDto(User user);
 

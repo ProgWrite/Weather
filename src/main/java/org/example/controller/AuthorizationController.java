@@ -4,7 +4,7 @@ package org.example.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserAuthorizationRequestDto;
-import org.example.dto.UserRegistrationRequestDto;
+import org.example.exceptions.WrongPasswordException;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,9 +31,7 @@ public class AuthorizationController {
     }
 
 
-
-
-    //TODO пишу это как заглушку для теста (редирект на страницу))
+    //TODO пишу это как заглушку для теста (редирект на страницу потом удали))
     @PostMapping
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
                              BindingResult bindingResult,
@@ -45,6 +43,14 @@ public class AuthorizationController {
             return "redirect:/sign-in";
         }
 
-        return "redirect:/checker";
+        try{
+            userService.isPasswordCorrect(user);
+            return "redirect:/checker";
+        }catch (WrongPasswordException exception){
+            redirectAttributes.addFlashAttribute("authorizeError", exception.getMessage());
+            redirectAttributes.addFlashAttribute("user", user);
+            return "redirect:/sign-in";
+        }
+
     }
 }
