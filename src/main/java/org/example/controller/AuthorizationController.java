@@ -1,6 +1,8 @@
 package org.example.controller;
 
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserAuthorizationRequestDto;
@@ -22,6 +24,8 @@ public class AuthorizationController {
 
     private final UserService userService;
 
+
+    //TODO нейминг данного метода (и других doGet методов)
     @GetMapping()
     public String signIn(Model model) {
         if (!model.containsAttribute("user")) {
@@ -35,7 +39,8 @@ public class AuthorizationController {
     @PostMapping
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
                              BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes){
+                             RedirectAttributes redirectAttributes,
+                                HttpServletResponse response) {
 
         redirectAttributes.addFlashAttribute("user", user);
 
@@ -45,8 +50,16 @@ public class AuthorizationController {
         }
 
         try{
-            userService.isPasswordCorrect(user);
+            String sessionId = userService.createSession(user);
+
+            Cookie cookie = new Cookie("sessionId", sessionId);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60);
+            response.addCookie(cookie);
             return "redirect:/checker";
+//            userService.isPasswordCorrect(user);
+
         }catch (WrongPasswordException exception){
             redirectAttributes.addFlashAttribute("authorizeError", exception.getMessage());
             return "redirect:/sign-in";
