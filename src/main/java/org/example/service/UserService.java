@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
+import org.example.exceptions.SessionLogoutException;
 import org.example.exceptions.WrongPasswordException;
 import org.example.mapper.UserMapper;
 import org.example.model.Session;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -62,6 +64,15 @@ public class UserService {
 
         return sessionRepository.save(session).getId().toString();
     }
+
+    public void logout(String sessionId) {
+        try{
+            sessionRepository.deleteById(UUID.fromString(sessionId));
+        } catch (RuntimeException exception){
+            throw  new SessionLogoutException("Failed to logout with id " + sessionId);
+        }
+    }
+
 
 //    public Optional<User> getUserBySession(String sessionId) {
 //        try {

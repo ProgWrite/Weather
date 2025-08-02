@@ -6,6 +6,8 @@ import org.example.model.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 @AllArgsConstructor
 public class SessionRepository {
@@ -18,6 +20,13 @@ public class SessionRepository {
         return session;
     }
 
+    public void deleteById(UUID id) {
+        sessionFactory.getCurrentSession()
+                .createQuery("DELETE FROM Session WHERE id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+    }
+
 
 //    public Optional<Session> findValidById(UUID id) {
 //        return Optional.ofNullable(
@@ -27,17 +36,6 @@ public class SessionRepository {
 //                        .uniqueResult()
 //        );
 //    }
-
-
-//    public void deleteById(UUID id) {
-//        sessionFactory.getCurrentSession()
-//                .createQuery("DELETE FROM Session WHERE id = :id")
-//                .setParameter("id", id)
-//                .executeUpdate();
-//    }
-
-
-
 
 
 
