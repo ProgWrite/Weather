@@ -1,17 +1,19 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Check</title>
 </head>
 <body>
+
     Тут будет приложение! Ты попал сюда, ура)
+<!--    <div th:include="~{header :: header-fragment}"> </div>-->
+    <div th:include="header"> </div>
+
+</body>
+</html>
 
 <!--    <div th:if="${#request.getAttribute('CURRENT_USER')}" style="float: right">-->
 <!--        Вы вошли как: <strong th:text="${#request.getAttribute('CURRENT_USER').login}"></strong>-->
 <!--    </div>-->
-
-
-</body>
-</html>
-//TODO удали этот класс

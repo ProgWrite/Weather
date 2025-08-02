@@ -58,7 +58,6 @@ public class AuthorizationController {
             cookie.setMaxAge(24 * 60 * 60);
             response.addCookie(cookie);
             return "redirect:/checker";
-//            userService.isPasswordCorrect(user);
 
         }catch (WrongPasswordException exception){
             redirectAttributes.addFlashAttribute("authorizeError", exception.getMessage());
