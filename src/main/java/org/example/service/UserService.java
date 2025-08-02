@@ -48,20 +48,12 @@ public class UserService {
         return true;
     }
 
-
     public String createSession(UserAuthorizationRequestDto userAuthorization) {
-        String login = userAuthorization.getLogin();
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new WrongPasswordException("User not found"));
-
-        if (!user.getPassword().equals(userAuthorization.getPassword())) {
-            throw  new WrongPasswordException("Wrong password");
-        }
+        User user = findUserAndCheckPassword(userAuthorization);
 
         Session session = new Session();
         session.setUser(user);
         session.setExpiresAt(LocalDateTime.now().plusDays(1));
-
         return sessionRepository.save(session).getId().toString();
     }
 
@@ -73,21 +65,15 @@ public class UserService {
         }
     }
 
+    private User findUserAndCheckPassword(UserAuthorizationRequestDto userAuthorization) {
+        String login = userAuthorization.getLogin();
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new WrongPasswordException("User not found"));
 
-//    public Optional<User> getUserBySession(String sessionId) {
-//        try {
-//            UUID uuid = UUID.fromString(sessionId);
-//            return sessionRepository.findValidById(uuid)
-//                    .map(Session::getUser);
-//        } catch (IllegalArgumentException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    public void logout(String sessionId) {
-//        try {
-//            sessionRepository.deleteById(UUID.fromString(sessionId));
-//        } catch (IllegalArgumentException ignored) {}
-//    }
+        if (!user.getPassword().equals(userAuthorization.getPassword())) {
+            throw  new WrongPasswordException("Wrong password");
+        }
+        return user;
+    }
 
 }

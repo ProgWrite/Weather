@@ -27,16 +27,4 @@ public class SessionRepository {
                 .executeUpdate();
     }
 
-
-//    public Optional<Session> findValidById(UUID id) {
-//        return Optional.ofNullable(
-//                sessionFactory.getCurrentSession()
-//                        .createQuery("FROM Session s JOIN FETCH s.user WHERE s.id = :id AND s.expiresAt > CURRENT_TIMESTAMP", Session.class)
-//                        .setParameter("id", id)
-//                        .uniqueResult()
-//        );
-//    }
-
-
-
 }

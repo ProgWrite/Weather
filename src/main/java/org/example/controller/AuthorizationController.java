@@ -2,7 +2,9 @@ package org.example.controller;
 
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserAuthorizationRequestDto;
@@ -34,13 +36,13 @@ public class AuthorizationController {
         return "sign-in";
     }
 
-
-    //TODO пишу это как заглушку для теста (редирект на страницу потом удали))
     @PostMapping
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes,
-                                HttpServletResponse response) {
+                                HttpServletResponse response,
+                                HttpServletRequest request
+                                ) {
 
         redirectAttributes.addFlashAttribute("user", user);
 
@@ -50,6 +52,9 @@ public class AuthorizationController {
         }
 
         try{
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+
             String sessionId = userService.createSession(user);
 
             Cookie cookie = new Cookie("sessionId", sessionId);
@@ -57,7 +62,8 @@ public class AuthorizationController {
             cookie.setPath("/");
             cookie.setMaxAge(24 * 60 * 60);
             response.addCookie(cookie);
-            return "redirect:/checker";
+
+            return "redirect:/";
 
         }catch (WrongPasswordException exception){
             redirectAttributes.addFlashAttribute("authorizeError", exception.getMessage());
