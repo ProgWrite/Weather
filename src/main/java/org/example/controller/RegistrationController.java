@@ -23,7 +23,7 @@ public class RegistrationController {
     private final UserService userService;
 
     @GetMapping()
-    public String signUp(Model model) {
+    public String showRegistrationForm(Model model) {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new UserRegistrationRequestDto());
         }

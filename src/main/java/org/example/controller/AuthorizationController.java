@@ -4,7 +4,6 @@ package org.example.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserAuthorizationRequestDto;
@@ -29,10 +28,8 @@ public class AuthorizationController {
 
     private final UserService userService;
 
-
-    //TODO нейминг данного метода (и других doGet методов)
     @GetMapping()
-    public String signIn(Model model) {
+    public String showAuthorizationForm(Model model) {
         if (!model.containsAttribute("user")) {
             model.addAttribute("user", new UserAuthorizationRequestDto());
         }
@@ -41,20 +38,19 @@ public class AuthorizationController {
 
     @PostMapping
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
-                             BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes,
-                                HttpServletResponse response,
-                                HttpServletRequest request
-                                ) {
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes,
+                                HttpServletResponse response
+    ) {
 
         redirectAttributes.addFlashAttribute("user", user);
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/sign-in";
         }
 
-        try{
+        try {
             Optional<UserResponseDto> userResponseDto = userService.getUser(user);
             String sessionId = userService.createSession(user);
 
@@ -68,7 +64,7 @@ public class AuthorizationController {
 
             return "redirect:/";
 
-        }catch (WrongPasswordException exception){
+        } catch (WrongPasswordException exception) {
             redirectAttributes.addFlashAttribute("authorizeError", exception.getMessage());
             return "redirect:/sign-in";
         }

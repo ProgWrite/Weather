@@ -3,7 +3,6 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserResponseDto;
-import org.example.model.User;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +18,7 @@ public class HomeController {
     private final UserService userService;
 
     @GetMapping("/")
-    public String home(
+    public String showHomePage(
             @CookieValue(value = "sessionId", required = false) String sessionId,
             Model model) {
 

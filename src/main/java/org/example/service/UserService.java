@@ -12,6 +12,8 @@ import org.example.model.Session;
 import org.example.model.User;
 import org.example.repository.SessionRepository;
 import org.example.repository.UserRepository;
+import org.example.util.PasswordUtil;
+import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,10 @@ public class UserService {
 
     public UserResponseDto create(UserRegistrationRequestDto userRegistrationRequestDto) {
         User user = UserMapper.INSTANCE.toEntity(userRegistrationRequestDto);
+
+        String encodedPassword = PasswordUtil.hashPassword(user.getPassword());
+        user.setPassword(encodedPassword);
+
         User savedUser = userRepository.create(user);
         log.info("User created with id: {}", savedUser.getId());
         return UserMapper.INSTANCE.toResponseDto(savedUser);
@@ -103,9 +109,11 @@ public class UserService {
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new WrongPasswordException("User not found"));
 
-        if (!user.getPassword().equals(userAuthorization.getPassword())) {
+
+        if(!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())){
             throw  new WrongPasswordException("Wrong password");
         }
+
         return user;
     }
 
