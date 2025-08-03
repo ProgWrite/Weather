@@ -2,7 +2,9 @@ package org.example.controller;
 
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -17,13 +19,16 @@ public class LogoutController {
 
     @PostMapping("/logout")
     public String logout(@CookieValue("sessionId") String sessionId,
-                         HttpServletResponse response) {
+                         HttpServletResponse response, HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+        session.invalidate();
 
         userService.logout(sessionId);
         Cookie cookie = new Cookie("sessionId", "");
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return "redirect:/sign-in";
+        return "redirect:/";
     }
 }
