@@ -6,6 +6,7 @@ import org.example.model.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -26,5 +27,21 @@ public class SessionRepository {
                 .setParameter("id", id)
                 .executeUpdate();
     }
+
+    public Optional<Session> findValidById(UUID id) {
+        return Optional.ofNullable(
+                sessionFactory.getCurrentSession()
+                        .createQuery("""
+                    FROM Session s 
+                    JOIN FETCH s.user 
+                    WHERE s.id = :id 
+                    AND s.expiresAt > CURRENT_TIMESTAMP
+                    """, Session.class)
+                        .setParameter("id", id)
+                        .uniqueResult()
+        );
+    }
+
+
 
 }

@@ -21,9 +21,6 @@ public class LogoutController {
     public String logout(@CookieValue("sessionId") String sessionId,
                          HttpServletResponse response, HttpServletRequest request) {
 
-        HttpSession session = request.getSession();
-        session.invalidate();
-
         userService.logout(sessionId);
         Cookie cookie = new Cookie("sessionId", "");
         cookie.setMaxAge(0);

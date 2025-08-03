@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -54,14 +55,46 @@ public class UserService {
         Session session = new Session();
         session.setUser(user);
         session.setExpiresAt(LocalDateTime.now().plusDays(1));
+        log.info("Session created with id: {}", session.getId());
         return sessionRepository.save(session).getId().toString();
     }
 
     public void logout(String sessionId) {
         try{
             sessionRepository.deleteById(UUID.fromString(sessionId));
+            log.info("Session deleted with id: {}", sessionId);
         } catch (RuntimeException exception){
             throw  new SessionLogoutException("Failed to logout with id " + sessionId);
+        }
+    }
+
+    public Optional<UserResponseDto> getUser(UserAuthorizationRequestDto userAuthorization) {
+        try{
+            User user = findUserAndCheckPassword(userAuthorization);
+            log.info("User found with id: {}", user.getId());
+            return Optional.ofNullable(UserMapper.INSTANCE.toResponseDto(user));
+        }catch (RuntimeException e){
+            log.info("User not found");
+            return Optional.empty();
+        }
+    }
+
+    public Optional<UserResponseDto> getUserBySession(String sessionId) {
+        if(sessionId == null || sessionId.isBlank()){
+            return Optional.empty();
+        }
+
+        try {
+            UUID uuid = UUID.fromString(sessionId);
+
+            Optional<Session> session = sessionRepository.findValidById(uuid);
+            User user = session.isPresent() ? session.get().getUser() : null;
+            UserResponseDto userResponseDto = UserMapper.INSTANCE.toResponseDto(user);
+            log.info("User found with id: {}", userResponseDto.getId());
+            return Optional.of(userResponseDto);
+
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
         }
     }
 
