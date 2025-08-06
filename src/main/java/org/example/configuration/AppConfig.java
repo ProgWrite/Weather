@@ -8,11 +8,14 @@ import org.flywaydb.core.Flyway;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -27,26 +30,46 @@ import java.util.Properties;
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan("org.example")
-@PropertySource("classpath:application.properties")
+@PropertySource(value = "classpath:application.properties", ignoreResourceNotFound = true)
 public class AppConfig implements WebMvcConfigurer {
 
     @Autowired
     private Environment env;
 
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+
+        configurer.setLocations(
+                new ClassPathResource("secrets.properties"),
+                new ClassPathResource("application.properties")
+        );
+
+        configurer.setIgnoreResourceNotFound(false);
+        configurer.setIgnoreUnresolvablePlaceholders(false);
+        configurer.setLocalOverride(true);
+
+        return configurer;
+    }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(
+            @Value("${db.url}") String url,
+            @Value("${db.username}") String username,
+            @Value("${db.password}") String password,
+            @Value("${db.driver}") String driver,
+            @Value("${db.pool.size}") int poolSize) {
+
         log.info("Creating datasource");
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(env.getProperty("db.url"));
-        config.setUsername(env.getProperty("db.username"));
-        config.setPassword(env.getProperty("db.password"));
-        config.setDriverClassName(env.getProperty("db.driver"));
-        config.setMaximumPoolSize(Integer.parseInt(env.getProperty("db.pool.size")));
+        config.setJdbcUrl(url);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setDriverClassName(driver);
+        config.setMaximumPoolSize(poolSize);
         config.setConnectionTestQuery("SELECT 1");
         return new HikariDataSource(config);
     }
-
 
     @Bean
     public SessionFactory sessionFactory(DataSource dataSource) {
