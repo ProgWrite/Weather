@@ -49,10 +49,10 @@ public class UserService {
 
         for (User user : users) {
             if (user.getLogin().equals(login)) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public String createSession(UserAuthorizationRequestDto userAuthorization) {

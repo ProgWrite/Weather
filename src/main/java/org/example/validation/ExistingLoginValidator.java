@@ -15,6 +15,6 @@ public class ExistingLoginValidator implements ConstraintValidator<ExistingLogin
 
     @Override
     public boolean isValid(String login, ConstraintValidatorContext constraintValidatorContext) {
-        return !userService.existsByLogin(login);
+        return userService.existsByLogin(login);
     }
 }
