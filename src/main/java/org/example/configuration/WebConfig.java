@@ -2,10 +2,12 @@ package org.example.configuration;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.interceptor.LoggerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -46,6 +48,8 @@ public class WebConfig implements WebMvcConfigurer {
         return resolver;
     }
 
-
-
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoggerInterceptor());
+    }
 }
