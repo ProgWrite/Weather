@@ -1,8 +1,10 @@
 package org.example.repository;
 
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.DatabaseException;
+import org.example.exceptions.UserExistsException;
 import org.example.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,7 +30,7 @@ public class UserRepository {
             return user;
         } catch (RuntimeException e) {
             log.error("Error while saving user {}", user, e);
-            throw new DatabaseException("User creation failed");
+            throw new UserExistsException("User already exists");
         }
     }
 

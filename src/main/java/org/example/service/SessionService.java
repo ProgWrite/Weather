@@ -1,7 +1,9 @@
 package org.example.service;
 
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserAuthorizationRequestDto;
 import org.example.exceptions.SessionLogoutException;
@@ -13,6 +15,7 @@ import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,10 +24,13 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
+@Getter
+@Setter
 public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
+    private Duration sessionDuration = Duration.ofHours(24);
 
     public Session create(UserAuthorizationRequestDto userAuthorization) {
         User user = userRepository.findByLogin(userAuthorization.getLogin())
@@ -33,7 +39,7 @@ public class SessionService {
         Session session = new Session();
         session.setUser(user);
         //TODO сделай 24 часа здесь
-        session.setExpiresAt(LocalDateTime.now().plusHours(24));
+        session.setExpiresAt(LocalDateTime.now().plus(sessionDuration));
         log.info("Session created with id: {}", session.getId());
         return sessionRepository.save(session);
     }
@@ -47,11 +53,12 @@ public class SessionService {
         }
     }
 
-    public void deleteExpiredSessions(String sessionId) {
+    public void deleteIfSessionExpired(String sessionId) {
         UUID uuid = UUID.fromString(sessionId);
         Optional<Session> session =  sessionRepository.findValidById(uuid);
         if (session.isEmpty()) {
             sessionRepository.deleteById(uuid);
+            log.info("Session deleted with id: {}", uuid);
         }
     }
 

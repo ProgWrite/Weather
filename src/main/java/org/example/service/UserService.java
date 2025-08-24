@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
-import org.example.exceptions.SessionLogoutException;
+import org.example.exceptions.UserNotFoundException;
 import org.example.exceptions.WrongPasswordException;
 import org.example.mapper.UserMapper;
 import org.example.model.Session;
@@ -13,11 +13,9 @@ import org.example.model.User;
 import org.example.repository.SessionRepository;
 import org.example.repository.UserRepository;
 import org.example.util.PasswordUtil;
-import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,33 +53,13 @@ public class UserService {
         return false;
     }
 
-    public String createSession(UserAuthorizationRequestDto userAuthorization) {
-        User user = findUserAndCheckPassword(userAuthorization);
-
-        Session session = new Session();
-        session.setUser(user);
-        session.setExpiresAt(LocalDateTime.now().plusDays(1));
-        log.info("Session created with id: {}", session.getId());
-        return sessionRepository.save(session).getId().toString();
-    }
-
-    public void logout(String sessionId) {
-        try{
-            sessionRepository.deleteById(UUID.fromString(sessionId));
-            log.info("Session deleted with id: {}", sessionId);
-        } catch (RuntimeException exception){
-            throw  new SessionLogoutException("Failed to logout with id " + sessionId);
-        }
-    }
-
     public Optional<UserResponseDto> getUser(UserAuthorizationRequestDto userAuthorization) {
         try{
             User user = findUserAndCheckPassword(userAuthorization);
             log.info("User found with id: {}", user.getId());
             return Optional.ofNullable(UserMapper.INSTANCE.toResponseDto(user));
-        }catch (RuntimeException e){
-            log.info("User not found");
-            return Optional.empty();
+        }catch (WrongPasswordException exception){
+            throw exception;
         }
     }
 
@@ -94,20 +72,24 @@ public class UserService {
             UUID uuid = UUID.fromString(sessionId);
 
             Optional<Session> session = sessionRepository.findValidById(uuid);
-            User user = session.isPresent() ? session.get().getUser() : null;
-            UserResponseDto userResponseDto = UserMapper.INSTANCE.toResponseDto(user);
-            log.info("User found with id: {}", userResponseDto.getId());
-            return Optional.of(userResponseDto);
+            User user = session.get().getUser();
+            if(user == null){
+                return Optional.empty();
+            }
 
-        } catch (IllegalArgumentException e) {
+            UserResponseDto userResponseDto = UserMapper.INSTANCE.toResponseDto(user);
+            return Optional.ofNullable(userResponseDto);
+
+        } catch (RuntimeException exception) {
             return Optional.empty();
         }
     }
 
+
     private User findUserAndCheckPassword(UserAuthorizationRequestDto userAuthorization) {
         String login = userAuthorization.getLogin();
         User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new WrongPasswordException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
 
         if(!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())){

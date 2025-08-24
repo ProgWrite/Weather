@@ -3,7 +3,6 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserResponseDto;
-import org.example.mapper.UserMapper;
 import org.example.service.SessionService;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -29,8 +28,7 @@ public class HomeController {
         boolean isLoggedIn = user.isPresent();
 
         if (!isLoggedIn && sessionId != null) {
-            //TODO нейминг метода
-            sessionService.deleteExpiredSessions(sessionId);
+            sessionService.deleteIfSessionExpired(sessionId);
         }
 
         model.addAttribute("isLoggedIn", isLoggedIn);

@@ -6,6 +6,7 @@ import org.example.config.TestAppConfig;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
 import org.example.exceptions.DatabaseException;
+import org.example.exceptions.UserExistsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +25,7 @@ public class UserServiceIT {
 
     private final static String LOGIN = "Павел";
     private final static String EXISTED_LOGIN = "Димка";
-    private final static String NON_EXISTENT_LOGIN = "неверный логин";
+    private final static String NON_EXISTENT_LOGIN = "несуществующий логин";
     private final static String PASSWORD = "пароль";
 
     private final UserService userService;
@@ -40,12 +41,11 @@ public class UserServiceIT {
     }
 
 
-
     @Test
-    public void createUserWithExistingLoginShouldThrowDatabaseException() {
+    public void createUserWithExistingLoginShouldThrowUserExistsException() {
         UserRegistrationRequestDto dto = new UserRegistrationRequestDto(EXISTED_LOGIN, PASSWORD, PASSWORD);
 
-        assertThrows(DatabaseException.class, () -> {
+        assertThrows(UserExistsException.class, () -> {
             userService.create(dto);
         });
 
@@ -64,7 +64,6 @@ public class UserServiceIT {
 
         assertFalse(result);
     }
-
 
 }
 
