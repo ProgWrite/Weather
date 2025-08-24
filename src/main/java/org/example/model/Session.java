@@ -29,7 +29,7 @@ public class Session {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime expiresAt;
 
 

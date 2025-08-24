@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserResponseDto;
 import org.example.exceptions.WrongPasswordException;
+import org.example.model.Session;
+import org.example.service.SessionService;
 import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class AuthorizationController {
 
     private final UserService userService;
+    private final SessionService sessionService;
 
     @GetMapping()
     public String showAuthorizationForm(Model model) {
@@ -51,7 +54,9 @@ public class AuthorizationController {
 
         try {
             Optional<UserResponseDto> userResponseDto = userService.getUser(user);
-            String sessionId = userService.createSession(user);
+
+            Session session = sessionService.create(user);
+            String sessionId = session.getId().toString();
 
             Cookie cookie = new Cookie("sessionId", sessionId);
             cookie.setHttpOnly(true);
@@ -69,4 +74,5 @@ public class AuthorizationController {
         }
 
     }
+
 }
