@@ -38,7 +38,6 @@ public class SessionService {
 
         Session session = new Session();
         session.setUser(user);
-        //TODO сделай 24 часа здесь
         session.setExpiresAt(LocalDateTime.now().plus(sessionDuration));
         log.info("Session created with id: {}", session.getId());
         return sessionRepository.save(session);

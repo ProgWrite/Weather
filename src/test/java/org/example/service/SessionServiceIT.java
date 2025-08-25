@@ -7,7 +7,7 @@ import org.example.config.TestAppConfig;
 import org.example.dto.UserAuthorizationRequestDto;
 import org.example.model.Session;
 import org.example.repository.SessionRepository;
-import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,9 +28,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SessionServiceIT {
 
     private final SessionService sessionService;
-
     private final SessionRepository sessionRepository;
-    private final SessionFactory sessionFactory;
+    private final static int SESSION_EXPIRATION_TIME = 2001;
+    private final static int TIME_BEFORE_EXPIRATION = 1500;
+
 
     @Test
     public void shouldCreateSession(){
@@ -61,8 +62,7 @@ public class SessionServiceIT {
         sessionService.setSessionDuration(Duration.ofSeconds(2));
         Session session = sessionService.create(user);
 
-        Thread.sleep(2001);
-        sessionService.deleteIfSessionExpired(session.getId().toString());
+        Thread.sleep(SESSION_EXPIRATION_TIME);
 
         Optional<Session> expiredSession = sessionRepository.findValidById(session.getId());
         assertTrue(expiredSession.isEmpty());
@@ -75,8 +75,7 @@ public class SessionServiceIT {
         sessionService.setSessionDuration(Duration.ofSeconds(2));
         Session session = sessionService.create(user);
 
-        Thread.sleep(1500);
-        sessionService.deleteIfSessionExpired(session.getId().toString());
+        Thread.sleep(TIME_BEFORE_EXPIRATION);
 
         Optional<Session> unexpiredSession = sessionRepository.findValidById(session.getId());
         assertTrue(unexpiredSession.isPresent());
