@@ -53,6 +53,7 @@ public class SessionServiceIT {
         Optional<Session> validSession = sessionRepository.findValidById(session.getId());
         assertFalse(validSession.isPresent());
 
+
     }
 
     @Test
