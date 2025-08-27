@@ -1,7 +1,9 @@
 package org.example.configuration;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.interceptor.AuthenticationInterceptor;
 import org.example.interceptor.LoggerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,7 +20,10 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 @Configuration
 @EnableWebMvc
 @ComponentScan("org.example.controller")
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final AuthenticationInterceptor authenticationInterceptor;
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -52,5 +57,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggerInterceptor());
 
+        registry.addInterceptor(authenticationInterceptor)
+                .addPathPatterns("/**");
     }
 }
