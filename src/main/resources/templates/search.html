@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+  <h2>Список локаций</h2>
+
+    <div th:each="location : ${locations}">
+        <h3 th:text="${location.name}"></h3>
+        <p>Страна: <span th:text="${location.country}"></span></p>
+        <p>Широта: <span th:text="${location.lat}"></span></p>
+        <p>Долгота: <span th:text="${location.lon}"></span></p>
+        <hr>
+    </div>
+
+</body>
+</html>
