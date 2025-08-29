@@ -58,6 +58,7 @@ public class SessionService {
         if (session.isEmpty()) {
             sessionRepository.deleteById(uuid);
             log.info("Session deleted with id: {}", uuid);
+            log.info("Session deleted with id: {}", uuid);
         }
     }
 
