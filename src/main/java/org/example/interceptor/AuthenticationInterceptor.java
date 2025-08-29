@@ -31,6 +31,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             request.setAttribute("isLoggedIn", true);
         } else {
             request.setAttribute("isLoggedIn", false);
+            System.out.println("hello");
         }
 
 
@@ -59,7 +60,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     //TODO тут надо будет добавлять пути по мере добавления
     private boolean isAuthorizationRequired(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.startsWith("/logout");
+        return path.startsWith("/logout") || path.startsWith("/search");
     }
 
     private void sendUnauthorizedResponse(HttpServletResponse response, String message) throws IOException {
