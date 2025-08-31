@@ -54,10 +54,9 @@ public class SessionService {
 
     public void deleteIfSessionExpired(String sessionId) {
         UUID uuid = UUID.fromString(sessionId);
-        Optional<Session> session =  sessionRepository.findValidById(uuid);
+        Optional<Session> session = sessionRepository.findValidById(uuid);
         if (session.isEmpty()) {
             sessionRepository.deleteById(uuid);
-            log.info("Session deleted with id: {}", uuid);
             log.info("Session deleted with id: {}", uuid);
         }
     }

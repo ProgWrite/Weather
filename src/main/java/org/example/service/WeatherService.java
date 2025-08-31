@@ -1,12 +1,10 @@
 package org.example.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
-import org.example.model.Location;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,41 +13,36 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
-
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class LocationService {
+public class WeatherService {
 
     private final static String API_KEY = "b6342efa2a5bf5746f4eb7015b4bd14b";
     private final JsonMapper jsonMapper = new JsonMapper();
 
-    //TODO будет валидация + исключения
-    public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
-
-        String url = buildUrl(locationName);
+    //TODO метод будет возвращать WeatherResponseDto
+    public void findWeather(LocationResponseDto locationResponseDto) throws IOException, InterruptedException {
+        String url = buildUrl(locationResponseDto);
         HttpRequest request = buildHttpRequest(url);
 
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-
         String jsonResponse = response.body();
-
-        List<LocationResponseDto> locations = jsonMapper.readValue(jsonResponse, new TypeReference<List<LocationResponseDto>>() {});
-        return locations;
     }
 
-    public void addLocation(LocationResponseDto locationResponseDto){
-        System.out.println("Добавил локацию" + locationResponseDto);
 
-    }
 
-    private String buildUrl(String locationName) {
-        String url = "http://api.openweathermap.org/geo/1.0/direct?q=" + locationName + "&limit=5" + "&appid=" + API_KEY;
+
+
+
+    private String buildUrl(LocationResponseDto locationResponseDto)  {
+        String latitude = String.valueOf(locationResponseDto.lat());
+        String longitude = String.valueOf(locationResponseDto.lon());
+        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + API_KEY;
         return url;
     }
 
@@ -58,5 +51,6 @@ public class LocationService {
                 .uri(URI.create(url))
                 .build();
     }
+
 
 }

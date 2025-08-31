@@ -10,6 +10,17 @@
     <div th:if="${isLoggedIn}">
         <h2> Добро пожаловать на свою страницу, <span th:text="${user.login}"></span></h2>
         <div th:include="header"> </div>
+
+        <form th:action="@{/}" method="post">
+
+            <div>
+                <label for="location"></label>
+                <input type="text" id="location" name="location" placeholder="Введите название города">
+            </div>
+
+            <button type="submit">Поиск</button>
+
+        </form>
     </div>
 
 

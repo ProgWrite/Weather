@@ -6,9 +6,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.UserAuthorizationRequestDto;
+import org.example.dto.UserResponseDto;
 import org.example.exceptions.WrongPasswordException;
 import org.example.model.Session;
 import org.example.service.SessionService;
+import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,12 +20,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 @RequestMapping("sign-in")
 @RequiredArgsConstructor
 @Controller
 public class AuthorizationController {
 
     private final SessionService sessionService;
+    private final UserService userService;
 
     @GetMapping()
     public String showAuthorizationForm(Model model) {
@@ -49,7 +54,8 @@ public class AuthorizationController {
         try {
             Session session = sessionService.create(user);
             String sessionId = session.getId().toString();
-
+            //TODO надо переделать. Не нравится что я получаю юзера, но на самом делаю здесь проверку пароля
+            Optional<UserResponseDto> userDto = userService.getUser(user);
 
             Cookie cookie = new Cookie("sessionId", sessionId);
             cookie.setHttpOnly(true);

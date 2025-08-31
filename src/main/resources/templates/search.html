@@ -12,6 +12,21 @@
         <p>Страна: <span th:text="${location.country}"></span></p>
         <p>Широта: <span th:text="${location.lat}"></span></p>
         <p>Долгота: <span th:text="${location.lon}"></span></p>
+        <p>Регион: <span th:text="${location.state}"></span></p>
+
+        <form th:action="@{/search}" method="post">
+            <input type="hidden" name="name" th:value="${location.name}">
+            <input type="hidden" name="country" th:value="${location.country}">
+            <input type="hidden" name="lat" th:value="${location.lat}">
+            <input type="hidden" name="lon" th:value="${location.lon}">
+            <input type="hidden" name="state" th:value="${location.state}">
+
+<!--            <input type="hidden" name="name" th:field="*{name}">-->
+<!--            <input type="hidden" name="lat" th:field="*{lat}">-->
+<!--            <input type="hidden" name="lat" th:field="*{lon}">-->
+            <button type="submit">Добавить</button>
+        </form>
+
         <hr>
     </div>
 

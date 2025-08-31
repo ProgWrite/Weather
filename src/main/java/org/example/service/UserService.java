@@ -53,6 +53,7 @@ public class UserService {
         return false;
     }
 
+
     public Optional<UserResponseDto> getUser(UserAuthorizationRequestDto userAuthorization) {
         try{
             User user = findUserAndCheckPassword(userAuthorization);
@@ -85,7 +86,7 @@ public class UserService {
         }
     }
 
-
+    //TODO надо будет переделать этот метод. Он делает 2 дела.
     private User findUserAndCheckPassword(UserAuthorizationRequestDto userAuthorization) {
         String login = userAuthorization.getLogin();
         User user = userRepository.findByLogin(login)
