@@ -2,9 +2,11 @@ package org.example.repository;
 
 import lombok.AllArgsConstructor;
 import org.example.model.Location;
-import org.example.model.Session;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 
 //TODO код методов дублируется. Можно сделать интерфейс
@@ -18,4 +20,15 @@ public class LocationRepository {
         sessionFactory.getCurrentSession().persist(location);
         return location;
     }
+
+    public List<Location> findAllByUserId(Long userId) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "from Location l where l.user.id=:userid";
+
+        return session.createQuery(hql, Location.class)
+                .setParameter("userid", userId)
+                .getResultList();
+    }
+
+
 }

@@ -1,16 +1,13 @@
 package org.example.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
-import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserResponseDto;
 import org.example.exceptions.UserNotFoundException;
 import org.example.mapper.LocationMapper;
-import org.example.mapper.UserMapper;
 import org.example.model.Location;
 import org.example.model.User;
 import org.example.repository.LocationRepository;
@@ -19,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -60,6 +57,24 @@ public class LocationService {
         Location location = LocationMapper.INSTANCE.toEntityWithUser(locationResponseDto, user);
         locationRepository.save(location);
     }
+
+    public List<LocationResponseDto> getAllLocations(UserResponseDto user){
+        Long userId = user.getId();
+        List<Location> locations = locationRepository.findAllByUserId(userId);
+
+        List<LocationResponseDto> locationResponseDtos =
+                locations.stream()
+                 .map(LocationMapper.INSTANCE::toDto)
+                 .collect(Collectors.toList());
+
+       return locationResponseDtos;
+    }
+
+
+
+
+
+
 
     private String buildUrl(String locationName) {
         String url = "http://api.openweathermap.org/geo/1.0/direct?q=" + locationName + "&limit=5" + "&appid=" + API_KEY;

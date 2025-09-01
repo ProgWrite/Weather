@@ -15,6 +15,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -25,19 +27,22 @@ public class WeatherService {
     private final static String API_KEY = "b6342efa2a5bf5746f4eb7015b4bd14b";
     private final JsonMapper jsonMapper = new JsonMapper();
 
+
     //TODO метод будет возвращать WeatherResponseDto
-    public void findWeather(LocationResponseDto locationResponseDto) throws IOException, InterruptedException {
-        String url = buildUrl(locationResponseDto);
-        HttpRequest request = buildHttpRequest(url);
+    public List<WeatherResponseDto> findWeather(List<LocationResponseDto> locations) throws IOException, InterruptedException {
+       List<WeatherResponseDto> weathers = new ArrayList<>();
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        String jsonResponse = response.body();
-
-        //TODO ПОЧИТАЙ О rootNode, что это такое и как работает, разбери!!!
-        JsonNode rootNode = jsonMapper.readTree(jsonResponse);
-        WeatherResponseDto dto = WeatherResponseDto.fromJson(rootNode);
+        for(LocationResponseDto location : locations){
+           String url = buildUrl(location);
+           HttpRequest request = buildHttpRequest(url);
+           HttpClient client = HttpClient.newHttpClient();
+           HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+           String jsonResponse = response.body();
+           JsonNode rootNode = jsonMapper.readTree(jsonResponse);
+           WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode);
+           weathers.add(weather);
+       }
+        return weathers;
 
 
         //TODO возможно тут будет не лист, а одна погода. Подумать в дальнейшем

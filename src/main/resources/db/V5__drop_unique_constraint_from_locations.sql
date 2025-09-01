@@ -1,0 +1,1 @@
+ALTER TABLE locations DROP CONSTRAINT uk_qvgktk8bt8v993m1k9ld5036k;

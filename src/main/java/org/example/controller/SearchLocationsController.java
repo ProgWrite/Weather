@@ -2,11 +2,10 @@ package org.example.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.LocationResponseDto;
-import org.example.dto.UserAuthorizationRequestDto;
 import org.example.dto.UserResponseDto;
+import org.example.dto.WeatherResponseDto;
 import org.example.service.LocationService;
 import org.example.service.UserService;
 import org.example.service.WeatherService;
@@ -15,9 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,11 +36,11 @@ public class SearchLocationsController {
     // TODO подумать о нейминге. Здесь я добавляю локацию и ищу погоду и отдаю это на сервер.
     //  Поменять местами. Сначала будет добавлять локацию в БД, затем искать погоду
     @PostMapping
-    public String addLocation(HttpServletRequest request, LocationResponseDto locationResponseDto) throws IOException, InterruptedException {
+    public String addLocation(HttpServletRequest request,
+                              LocationResponseDto locationResponseDto) {
         UserResponseDto user = (UserResponseDto) request.getAttribute("user");
         locationService.addLocation(locationResponseDto, user);
-        weatherService.findWeather(locationResponseDto);
-        return "/";
+        return "redirect:/";
     }
 
 }
