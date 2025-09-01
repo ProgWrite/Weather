@@ -1,10 +1,12 @@
 package org.example.service;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
+import org.example.dto.WeatherResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,15 @@ public class WeatherService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         String jsonResponse = response.body();
+
+        //TODO ПОЧИТАЙ О rootNode, что это такое и как работает, разбери!!!
+        JsonNode rootNode = jsonMapper.readTree(jsonResponse);
+        WeatherResponseDto dto = WeatherResponseDto.fromJson(rootNode);
+
+
+        //TODO возможно тут будет не лист, а одна погода. Подумать в дальнейшем
+//        List<WeatherResponseDto> weathers = jsonMapper.readValue(jsonResponse, new TypeReference<List<WeatherResponseDto>>() {});
+
     }
 
 

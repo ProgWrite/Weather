@@ -6,11 +6,20 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
+import org.example.dto.UserAuthorizationRequestDto;
+import org.example.dto.UserResponseDto;
+import org.example.exceptions.UserNotFoundException;
+import org.example.mapper.LocationMapper;
+import org.example.mapper.UserMapper;
 import org.example.model.Location;
+import org.example.model.User;
+import org.example.repository.LocationRepository;
+import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -26,6 +35,8 @@ public class LocationService {
 
     private final static String API_KEY = "b6342efa2a5bf5746f4eb7015b4bd14b";
     private final JsonMapper jsonMapper = new JsonMapper();
+    private final LocationRepository locationRepository;
+    private final UserRepository userRepository;
 
     //TODO будет валидация + исключения
     public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
@@ -43,9 +54,11 @@ public class LocationService {
         return locations;
     }
 
-    public void addLocation(LocationResponseDto locationResponseDto){
-        System.out.println("Добавил локацию" + locationResponseDto);
-
+    public void addLocation(LocationResponseDto locationResponseDto, UserResponseDto userDto){
+        User user = userRepository.findByLogin(userDto.getLogin())
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
+        Location location = LocationMapper.INSTANCE.toEntityWithUser(locationResponseDto, user);
+        locationRepository.save(location);
     }
 
     private String buildUrl(String locationName) {

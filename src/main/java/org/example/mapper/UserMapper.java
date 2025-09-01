@@ -1,23 +1,24 @@
 package org.example.mapper;
 
 
+import org.example.dto.LocationResponseDto;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
+import org.example.model.Location;
 import org.example.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
-public interface UserMapper {
+    @Mapper
+    public interface UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+        UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "id", ignore = true)
-    User toEntity(UserRegistrationRequestDto userRegistrationRequestDto);
+        @Mapping(target = "id", ignore = true)
+        User toEntity(UserRegistrationRequestDto userRegistrationRequestDto);
 
-    UserResponseDto toResponseDto(User user);
+        UserResponseDto toResponseDto(User user);
 
 
-
-}
+    }
