@@ -13,11 +13,13 @@
     <div>
         <label for="username">Login:</label>
         <input type="text" id="username" th:field="*{login}" required>
+        <small style="color: #666; font-size: 12px;">The name must be between 3 and 30 characters long, Russian or English letters only</small>
     </div>
 
     <div>
         <label for="password">Password:</label>
         <input type="password" id="password" th:field="*{password}" required>
+        <small style="color: #666; font-size: 12px;">The password must be between 3 and 30 characters long</small>
     </div>
 
     <div>

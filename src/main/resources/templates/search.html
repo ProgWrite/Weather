@@ -6,6 +6,7 @@
 </head>
 <body>
   <h2>Список локаций</h2>
+    <div th:include="header"> </div>
 
     <div th:each="location : ${locations}">
         <h3 th:text="${location.name}"></h3>

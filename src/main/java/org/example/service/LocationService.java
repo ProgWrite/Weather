@@ -48,7 +48,7 @@ public class LocationService {
         String jsonResponse = response.body();
         List<LocationResponseDto> locations = jsonMapper.readValue(jsonResponse, new TypeReference<List<LocationResponseDto>>() {});
         if(locations.isEmpty()) {
-            throw new LocationNotFoundException("The Location you entered not found. Please try again");
+            throw new LocationNotFoundException("The location you entered not found. Please try again");
         }
         return locations;
     }
