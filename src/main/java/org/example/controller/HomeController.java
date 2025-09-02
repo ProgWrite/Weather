@@ -2,15 +2,19 @@ package org.example.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.dto.LocationRequestDto;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.UserResponseDto;
 import org.example.dto.WeatherResponseDto;
+import org.example.model.Location;
 import org.example.service.LocationService;
 import org.example.service.WeatherService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
@@ -32,14 +36,14 @@ public class HomeController {
             List<WeatherResponseDto> weathers = weatherService.findWeather(locations);
             model.addAttribute("weathers", weathers);
         }
+        model.addAttribute("location", new LocationRequestDto());
         return "index";
     }
 
-//TODO тут будет Dtoшка и буду использовать ModelAttribute и возможно валидацию (как в других контролерах).Т
-// Также будет LocationResponseDto с валидацией
     @PostMapping
-    public String searchLocations(HttpServletRequest request, Model model) throws IOException, InterruptedException {
-        String locationName = request.getParameter("location");
+    public String searchLocations(@ModelAttribute @Valid LocationRequestDto location,
+                                  Model model) throws IOException, InterruptedException {
+        String locationName = location.getName();
         List<LocationResponseDto> locations = locationService.findLocations(locationName);
         model.addAttribute("locations", locations);
         return "search";

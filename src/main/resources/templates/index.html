@@ -11,11 +11,11 @@
         <h2> Добро пожаловать на свою страницу, <span th:text="${user.login}"></span></h2>
         <div th:include="header"> </div>
 
-        <form th:action="@{/}" method="post">
+        <form th:action="@{/}" method="post" th:object="${location}">
 
             <div>
-                <label for="location"></label>
-                <input type="text" id="location" name="location" placeholder="Введите название города">
+                <label for="name"></label>
+                <input type="text" id="name" name="name" placeholder="Введите название города" th:field="*{name}" required>
             </div>
 
             <button type="submit">Поиск</button>
