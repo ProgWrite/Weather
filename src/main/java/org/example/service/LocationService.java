@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.UserResponseDto;
+import org.example.exceptions.LocationExistsException;
+import org.example.exceptions.LocationNotFoundException;
 import org.example.exceptions.UserNotFoundException;
 import org.example.mapper.LocationMapper;
 import org.example.model.Location;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -40,20 +43,25 @@ public class LocationService {
 
         String url = buildUrl(locationName);
         HttpRequest request = buildHttpRequest(url);
-
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-
         String jsonResponse = response.body();
-
         List<LocationResponseDto> locations = jsonMapper.readValue(jsonResponse, new TypeReference<List<LocationResponseDto>>() {});
+        if(locations.isEmpty()) {
+            throw new LocationNotFoundException("The Location you entered not found. Please try again");
+        }
         return locations;
     }
 
+    //TODO нейминг
     public void addLocation(LocationResponseDto locationResponseDto, UserResponseDto userDto){
         User user = userRepository.findByLogin(userDto.getLogin())
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
+
+        if(isLocationExists(locationResponseDto, userDto)){
+            throw new LocationExistsException("Location already exists with name " + locationResponseDto.name());
+        }
+
         Location location = LocationMapper.INSTANCE.toEntityWithUser(locationResponseDto, user);
         locationRepository.save(location);
     }
@@ -71,9 +79,22 @@ public class LocationService {
     }
 
 
+    private boolean isLocationExists(LocationResponseDto location, UserResponseDto user){
+        double latitude = location.lat();
+        double longitude = location.lon();
+
+        double roundedLatitude = Math.round(latitude * 100.0) / 100.0;
+        double roundedLongitude = Math.round(longitude * 100.0) / 100.0;
 
 
-
+        List<LocationResponseDto> locations = getAllLocations(user);
+        for(LocationResponseDto locationDto : locations) {
+            if(locationDto.lat() == roundedLatitude && locationDto.lon() == roundedLongitude) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     private String buildUrl(String locationName) {

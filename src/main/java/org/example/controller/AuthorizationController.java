@@ -38,6 +38,7 @@ public class AuthorizationController {
         return "sign-in";
     }
 
+    //TODO нужно ли здесь bindingResult.hasErrors? В HomeContoller сделал обработку без этого
     @PostMapping
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
                                 BindingResult bindingResult,

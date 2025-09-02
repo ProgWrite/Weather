@@ -13,7 +13,6 @@ public class UniqueLoginValidator implements ConstraintValidator<UniqueLogin, St
 
     private final UserService userService;
 
-
     @Override
     public boolean isValid(String login, ConstraintValidatorContext constraintValidatorContext) {
         return !userService.existsByLogin(login);

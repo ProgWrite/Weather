@@ -22,6 +22,14 @@
 
         </form>
 
+        <div th:if="${locationExist}" style="color: red">
+             <p th:text="${locationExist}">Локация уже существует</p>
+        </div>
+
+        <div th:if="${locationNotFound}" style="color: red">
+            <p th:text="${locationNotFound}">Локация не найдена</p>
+        </div>
+
         <h3>Список погод:</h3>
 
         <div th:each="weather : ${weathers}">

@@ -8,7 +8,7 @@ import org.example.dto.LocationRequestDto;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.UserResponseDto;
 import org.example.dto.WeatherResponseDto;
-import org.example.model.Location;
+import org.example.exceptions.LocationNotFoundException;
 import org.example.service.LocationService;
 import org.example.service.WeatherService;
 import org.springframework.stereotype.Controller;
@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +30,15 @@ public class HomeController {
     private final WeatherService weatherService;
 
     @GetMapping("/")
-    public String showHomePage(HttpServletRequest request, Model model) throws IOException, InterruptedException {
+    public String showHomePage(HttpServletRequest request,
+                               Model model,
+                               @ModelAttribute("locationExist") String locationExistMessage)
+            throws IOException, InterruptedException {
+
+        if (locationExistMessage != null && !locationExistMessage.isEmpty()) {
+            model.addAttribute("locationExist", locationExistMessage);
+        }
+
         UserResponseDto user = (UserResponseDto) request.getAttribute("user");
         if (user != null) {
             List<LocationResponseDto> locations = locationService.getAllLocations(user);
@@ -42,11 +51,18 @@ public class HomeController {
 
     @PostMapping
     public String searchLocations(@ModelAttribute @Valid LocationRequestDto location,
-                                  Model model) throws IOException, InterruptedException {
-        String locationName = location.getName();
-        List<LocationResponseDto> locations = locationService.findLocations(locationName);
-        model.addAttribute("locations", locations);
-        return "search";
+                                  Model model, RedirectAttributes redirectAttributes) throws IOException, InterruptedException {
+
+        try{
+            String locationName = location.getName();
+            List<LocationResponseDto> locations = locationService.findLocations(locationName);
+            model.addAttribute("locations", locations);
+            return "search";
+        }catch(LocationNotFoundException exception){
+            redirectAttributes.addFlashAttribute("locationNotFound", exception.getMessage());
+            return "redirect:/";
+        }
+
     }
 
 }
