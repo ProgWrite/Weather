@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserAuthorizationRequestDto;
+import org.example.dto.UserResponseDto;
 import org.example.exceptions.SessionLogoutException;
 import org.example.exceptions.UserNotFoundException;
+import org.example.mapper.UserMapper;
 import org.example.model.Session;
 import org.example.model.User;
 import org.example.repository.SessionRepository;
@@ -30,7 +32,8 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
-    private Duration sessionDuration = Duration.ofHours(24);
+//    private Duration sessionDuration = Duration.ofHours(24);
+    private Duration sessionDuration = Duration.ofSeconds(15);
 
     public Session create(UserAuthorizationRequestDto userAuthorization) {
         User user = userRepository.findByLogin(userAuthorization.getLogin())
@@ -49,6 +52,28 @@ public class SessionService {
             log.info("Session deleted with id: {}", sessionId);
         } catch (RuntimeException exception){
             throw  new SessionLogoutException("Failed to logout with id " + sessionId);
+        }
+    }
+
+    public Optional<UserResponseDto> getUserBySession(String sessionId) {
+        if(sessionId == null || sessionId.isBlank()){
+            return Optional.empty();
+        }
+
+        try {
+            UUID uuid = UUID.fromString(sessionId);
+
+            Optional<Session> session = sessionRepository.findValidById(uuid);
+            User user = session.get().getUser();
+            if(user == null){
+                return Optional.empty();
+            }
+
+            UserResponseDto userResponseDto = UserMapper.INSTANCE.toResponseDto(user);
+            return Optional.ofNullable(userResponseDto);
+
+        } catch (RuntimeException exception) {
+            return Optional.empty();
         }
     }
 

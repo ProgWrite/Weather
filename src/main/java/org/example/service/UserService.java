@@ -28,8 +28,6 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SessionRepository sessionRepository;
-
 
     public UserResponseDto create(UserRegistrationRequestDto userRegistrationRequestDto) {
         User user = UserMapper.INSTANCE.toEntity(userRegistrationRequestDto);
@@ -53,7 +51,6 @@ public class UserService {
         return false;
     }
 
-
     public Optional<UserResponseDto> getUser(UserAuthorizationRequestDto userAuthorization) {
         try{
             if(userAuthorization == null){
@@ -64,28 +61,6 @@ public class UserService {
             return Optional.ofNullable(UserMapper.INSTANCE.toResponseDto(user));
         }catch (WrongPasswordException exception){
             throw exception;
-        }
-    }
-
-    public Optional<UserResponseDto> getUserBySession(String sessionId) {
-        if(sessionId == null || sessionId.isBlank()){
-            return Optional.empty();
-        }
-
-        try {
-            UUID uuid = UUID.fromString(sessionId);
-
-            Optional<Session> session = sessionRepository.findValidById(uuid);
-            User user = session.get().getUser();
-            if(user == null){
-                return Optional.empty();
-            }
-
-            UserResponseDto userResponseDto = UserMapper.INSTANCE.toResponseDto(user);
-            return Optional.ofNullable(userResponseDto);
-
-        } catch (RuntimeException exception) {
-            return Optional.empty();
         }
     }
 

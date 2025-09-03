@@ -10,9 +10,11 @@ import org.example.dto.UserResponseDto;
 import org.example.dto.WeatherResponseDto;
 import org.example.exceptions.LocationNotFoundException;
 import org.example.service.LocationService;
+import org.example.service.SessionService;
 import org.example.service.WeatherService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,13 +29,19 @@ import java.util.List;
 public class HomeController {
 
     private final LocationService locationService;
+    private final SessionService sessionService;
     private final WeatherService weatherService;
 
+    //TODO переживаю что этот метод перегружен избыточной логикой!
     @GetMapping("/")
     public String showHomePage(HttpServletRequest request,
                                Model model,
                                @ModelAttribute("locationExist") String locationExistMessage)
             throws IOException, InterruptedException {
+
+//        if(sessionId == null) {
+//            sessionService.deleteIfSessionExpired(sessionId);
+//        }
 
         if (locationExistMessage != null && !locationExistMessage.isEmpty()) {
             model.addAttribute("locationExist", locationExistMessage);
@@ -45,6 +53,7 @@ public class HomeController {
             List<WeatherResponseDto> weathers = weatherService.findWeather(locations);
             model.addAttribute("weathers", weathers);
         }
+
         model.addAttribute("location", new LocationRequestDto());
         return "index";
     }

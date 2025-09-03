@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserResponseDto;
+import org.example.repository.SessionRepository;
+import org.example.service.SessionService;
 import org.example.service.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,13 +20,13 @@ import java.util.Optional;
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
-    private final UserService userService;
+    private final SessionService sessionService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String sessionId = getSessionIdFromCookies(request);
-        Optional<UserResponseDto> user = userService.getUserBySession(sessionId);
+        Optional<UserResponseDto> user = sessionService.getUserBySession(sessionId);
 
         if (user.isPresent()) {
             request.setAttribute("user", user.get());
@@ -34,6 +36,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             System.out.println("hello");
         }
 
+        if(!user.isPresent() && sessionId != null) {
+            sessionService.deleteIfSessionExpired(sessionId);
+        }
 
         if (isAuthorizationRequired(request)) {
             if (user.isEmpty()) {

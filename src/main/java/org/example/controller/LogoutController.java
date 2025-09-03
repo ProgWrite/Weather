@@ -21,7 +21,7 @@ public class LogoutController {
 
     @PostMapping("/logout")
     public String logout(@CookieValue("sessionId") String sessionId,
-                         HttpServletResponse response, HttpServletRequest request) {
+                         HttpServletResponse response) {
 
         sessionService.logout(sessionId);
         Cookie cookie = new Cookie("sessionId", "");
