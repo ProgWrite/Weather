@@ -35,7 +35,7 @@
         <div th:each="weather : ${weathers}">
             <p>Название: <span th:text="${weather.name}"></span></p>
             <p>Страна: <span th:text="${weather.country}"></span></p>
-            <p>Температура: <span th:text="${weather.temp}"></span></p>
+            <p>Температура: <span th:text="${weather.getTempCelsiusRounded()}"></span>°C</p>
             <p>Описание: <span th:text="${weather.description}"></span></p>
             <p>Влажость: <span th:text="${weather.humidity}"></span></p>
             <hr>

@@ -38,7 +38,7 @@ public class LocationService {
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
 
-    //TODO будет валидация + исключения
+
     public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
 
         String url = buildUrl(locationName);
@@ -66,16 +66,21 @@ public class LocationService {
         locationRepository.save(location);
     }
 
-    public List<LocationResponseDto> getAllLocations(UserResponseDto user){
+    public List<LocationResponseDto> getAllLocations(UserResponseDto user) {
+        if (user == null) {
+            throw new UserNotFoundException("User not found with id " + user.getId());
+        }
         Long userId = user.getId();
         List<Location> locations = locationRepository.findAllByUserId(userId);
+        if (locations.isEmpty()) {
+            throw new LocationNotFoundException("The location you entered not found. Please try again");
+        }
 
         List<LocationResponseDto> locationResponseDtos =
                 locations.stream()
-                 .map(LocationMapper.INSTANCE::toDto)
-                 .collect(Collectors.toList());
-
-       return locationResponseDtos;
+                        .map(LocationMapper.INSTANCE::toDto)
+                        .collect(Collectors.toList());
+        return locationResponseDtos;
     }
 
 

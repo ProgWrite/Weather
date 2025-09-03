@@ -11,9 +11,12 @@ public record WeatherResponseDto(
         String description,
         double humidity) {
 
-    public static WeatherResponseDto fromJson(JsonNode rootNode) {
+    private static final double KELVIN_OFFSET = 273.15;
+
+    public static WeatherResponseDto fromJson(JsonNode rootNode, String locationName) {
         return new WeatherResponseDto(
-                rootNode.path("name").asText(),
+//                rootNode.path("name").asText(),
+                locationName,
                 rootNode.path("sys").path("country").asText(),
                 rootNode.path("main").path("temp").asDouble(),
                 rootNode.path("weather").get(0).path("description").asText(),
@@ -21,5 +24,7 @@ public record WeatherResponseDto(
         );
     }
 
-
+    public double getTempCelsiusRounded() {
+        return Math.round(temp - KELVIN_OFFSET);
+    }
 }

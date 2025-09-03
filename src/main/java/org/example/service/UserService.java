@@ -56,6 +56,9 @@ public class UserService {
 
     public Optional<UserResponseDto> getUser(UserAuthorizationRequestDto userAuthorization) {
         try{
+            if(userAuthorization == null){
+                throw new UserNotFoundException("User not found with login " + userAuthorization.getLogin());
+            }
             User user = findUserAndCheckPassword(userAuthorization);
             log.info("User found with id: {}", user.getId());
             return Optional.ofNullable(UserMapper.INSTANCE.toResponseDto(user));
@@ -91,7 +94,6 @@ public class UserService {
         String login = userAuthorization.getLogin();
         User user = userRepository.findByLogin(login)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-
 
         if(!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())){
             throw  new WrongPasswordException("Wrong password");

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.WeatherResponseDto;
+import org.example.exceptions.WeatherNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,8 @@ public class WeatherService {
     private final JsonMapper jsonMapper = new JsonMapper();
 
 
-    //TODO метод будет возвращать WeatherResponseDto
+
+    //TODO может быть разбить метод, подумать об этом
     public List<WeatherResponseDto> findWeather(List<LocationResponseDto> locations) throws IOException, InterruptedException {
        List<WeatherResponseDto> weathers = new ArrayList<>();
 
@@ -39,21 +41,14 @@ public class WeatherService {
            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
            String jsonResponse = response.body();
            JsonNode rootNode = jsonMapper.readTree(jsonResponse);
-           WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode);
+           WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode, location.name());
            weathers.add(weather);
        }
+        if(weathers.isEmpty()){
+            throw new WeatherNotFoundException("Weathers not found");
+        }
         return weathers;
-
-
-        //TODO возможно тут будет не лист, а одна погода. Подумать в дальнейшем
-//        List<WeatherResponseDto> weathers = jsonMapper.readValue(jsonResponse, new TypeReference<List<WeatherResponseDto>>() {});
-
     }
-
-
-
-
-
 
     private String buildUrl(LocationResponseDto locationResponseDto)  {
         String latitude = String.valueOf(locationResponseDto.lat());
@@ -67,6 +62,5 @@ public class WeatherService {
                 .uri(URI.create(url))
                 .build();
     }
-
 
 }
