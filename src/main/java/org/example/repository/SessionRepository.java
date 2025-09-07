@@ -28,6 +28,7 @@ public class SessionRepository {
                 .executeUpdate();
     }
 
+
     public Optional<Session> findValidById(UUID id) {
         return Optional.ofNullable(
                 sessionFactory.getCurrentSession()

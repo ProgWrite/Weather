@@ -34,7 +34,6 @@ public class LocationsController {
         return "search";
     }
 
-
     @PostMapping
     public String addLocation(HttpServletRequest request,
                               LocationResponseDto locationResponseDto,

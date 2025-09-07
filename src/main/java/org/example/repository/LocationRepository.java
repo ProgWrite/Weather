@@ -30,5 +30,12 @@ public class LocationRepository {
                 .getResultList();
     }
 
+    public void deleteByCoordinates(double lat, double lon) {
+        sessionFactory.getCurrentSession()
+                .createQuery("DELETE FROM Location WHERE latitude = :lat and longitude = :lon")
+                .setParameter("lat", lat)
+                .setParameter("lon", lon)
+                .executeUpdate();
+    }
 
 }

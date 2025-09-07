@@ -6,17 +6,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record WeatherResponseDto(
         String name,
+        double lat,
+        double lon,
         String country,
         double temp,
         String description,
-        double humidity) {
+        double humidity
+        ) {
 
     private static final double KELVIN_OFFSET = 273.15;
 
-    public static WeatherResponseDto fromJson(JsonNode rootNode, String locationName) {
+    public static WeatherResponseDto fromJson(JsonNode rootNode, LocationResponseDto location) {
         return new WeatherResponseDto(
-//                rootNode.path("name").asText(),
-                locationName,
+                location.name(),
+                location.lat(),
+                location.lon(),
                 rootNode.path("sys").path("country").asText(),
                 rootNode.path("main").path("temp").asDouble(),
                 rootNode.path("weather").get(0).path("description").asText(),

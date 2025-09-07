@@ -31,6 +31,20 @@
             <p>Температура: <span th:text="${weather.getTempCelsiusRounded()}"></span>°C</p>
             <p>Описание: <span th:text="${weather.description}"></span></p>
             <p>Влажость: <span th:text="${weather.humidity}"></span></p>
+
+            <form th:action="@{/}" method="post">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="hidden" name="name" th:value="${weather.name()}">
+                <input type="hidden" name="lat" th:value="${weather.lat()}">
+                <input type="hidden" name="lon" th:value="${weather.lon()}">
+                <input type="hidden" name="country" th:value="${weather.country()}">
+                <input type="hidden" name="temp" th:value="${weather.getTempCelsiusRounded()}">
+                <input type="hidden" name="description" th:value="${weather.description()}">
+                <input type="hidden" name="humidity" th:value="${weather.humidity()}">
+
+                <button type="submit">Удалить локацию</button>
+            </form>
+
             <hr>
         </div>
 

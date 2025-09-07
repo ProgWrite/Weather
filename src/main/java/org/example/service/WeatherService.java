@@ -45,7 +45,7 @@ public class WeatherService {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String jsonResponse = response.body();
         JsonNode rootNode = jsonMapper.readTree(jsonResponse);
-        WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode, location.name());
+        WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode, location);
         return weather;
     }
 

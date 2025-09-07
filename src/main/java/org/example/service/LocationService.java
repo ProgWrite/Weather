@@ -6,13 +6,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.UserResponseDto;
+import org.example.dto.WeatherResponseDto;
 import org.example.exceptions.LocationExistsException;
 import org.example.exceptions.LocationNotFoundException;
 import org.example.exceptions.UserNotFoundException;
+import org.example.exceptions.WeatherNotFoundException;
 import org.example.mapper.LocationMapper;
 import org.example.model.Location;
 import org.example.model.User;
 import org.example.repository.LocationRepository;
+import org.example.repository.SessionRepository;
 import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +40,7 @@ public class LocationService {
     private final JsonMapper jsonMapper = new JsonMapper();
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private final SessionRepository sessionRepository;
 
 
     public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
@@ -52,7 +56,6 @@ public class LocationService {
         }
         return locations;
     }
-
 
     public void addLocation(LocationResponseDto locationResponseDto, UserResponseDto userDto){
         User user = userRepository.findByLogin(userDto.getLogin())
@@ -78,6 +81,19 @@ public class LocationService {
                         .map(LocationMapper.INSTANCE::toDto)
                         .collect(Collectors.toList());
         return locationResponseDtos;
+    }
+
+    public void delete(WeatherResponseDto weather, UserResponseDto user){
+        if(weather == null){
+            throw new WeatherNotFoundException("Weather not found with name " + weather.name());
+        }
+
+        List<LocationResponseDto> locations = getAllLocations(user);
+        for (LocationResponseDto location : locations) {
+            if(location.lat() == weather.lat() && location.lon() == weather.lon()){
+               locationRepository.deleteByCoordinates(weather.lat(), weather.lon());
+            }
+        }
     }
 
 
