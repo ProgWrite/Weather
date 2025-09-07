@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
-//TODO код методов дублируется. Можно сделать интерфейс
+
 @Repository
 @AllArgsConstructor
 public class LocationRepository {

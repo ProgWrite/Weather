@@ -38,7 +38,7 @@ public class AuthorizationController {
         return "sign-in";
     }
 
-    //TODO нужно ли здесь bindingResult.hasErrors? В HomeContoller сделал обработку без этого
+
     @PostMapping
     public String authorizeUser(@ModelAttribute @Valid UserAuthorizationRequestDto user,
                                 BindingResult bindingResult,
@@ -55,9 +55,7 @@ public class AuthorizationController {
         try {
             Session session = sessionService.create(user);
             String sessionId = session.getId().toString();
-            //TODO надо переделать. Не нравится что я получаю юзера, но на самом делаю здесь проверку пароля
-            Optional<UserResponseDto> userDto = userService.getUser(user);
-
+            userService.checkPassword(user);
             Cookie cookie = new Cookie("sessionId", sessionId);
             cookie.setHttpOnly(true);
             cookie.setPath("/");

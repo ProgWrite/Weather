@@ -53,7 +53,7 @@ public class LocationService {
         return locations;
     }
 
-    //TODO нейминг
+
     public void addLocation(LocationResponseDto locationResponseDto, UserResponseDto userDto){
         User user = userRepository.findByLogin(userDto.getLogin())
                 .orElseThrow(()-> new UserNotFoundException("User not found"));

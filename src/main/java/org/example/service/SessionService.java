@@ -32,8 +32,7 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
-//    private Duration sessionDuration = Duration.ofHours(24);
-    private Duration sessionDuration = Duration.ofSeconds(15);
+    private Duration sessionDuration = Duration.ofHours(24);
 
     public Session create(UserAuthorizationRequestDto userAuthorization) {
         User user = userRepository.findByLogin(userAuthorization.getLogin())

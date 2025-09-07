@@ -15,7 +15,8 @@
 
             <div>
                 <label for="name"></label>
-                <input type="text" id="name" name="name" placeholder="Введите название города" th:field="*{name}" required>
+                <input type="text" id="name" name="name" placeholder="Введите название города"
+                       th:field="*{name}" required>
             </div>
 
             <button type="submit">Поиск</button>
@@ -28,6 +29,10 @@
 
         <div th:if="${locationNotFound}" style="color: red">
             <p th:text="${locationNotFound}">Локация не найдена</p>
+        </div>
+
+        <div th:if="${errors}">
+            <p style="color: red" th:each="error : ${errors}" th:text="${error.defaultMessage}">Error message</p>
         </div>
 
         <h3>Список погод:</h3>

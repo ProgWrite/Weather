@@ -51,30 +51,23 @@ public class UserService {
         return false;
     }
 
-    public Optional<UserResponseDto> getUser(UserAuthorizationRequestDto userAuthorization) {
+
+    public void checkPassword(UserAuthorizationRequestDto userAuthorization) {
         try{
             if(userAuthorization == null){
                 throw new UserNotFoundException("User not found with login " + userAuthorization.getLogin());
             }
-            User user = findUserAndCheckPassword(userAuthorization);
-            log.info("User found with id: {}", user.getId());
-            return Optional.ofNullable(UserMapper.INSTANCE.toResponseDto(user));
+            String login = userAuthorization.getLogin();
+            User user = userRepository.findByLogin(login)
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
+            if(!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())){
+                throw  new WrongPasswordException("Wrong password");
+            }
         }catch (WrongPasswordException exception){
             throw exception;
         }
     }
 
-    //TODO надо будет переделать этот метод. Он делает 2 дела.
-    private User findUserAndCheckPassword(UserAuthorizationRequestDto userAuthorization) {
-        String login = userAuthorization.getLogin();
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        if(!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())){
-            throw  new WrongPasswordException("Wrong password");
-        }
-
-        return user;
-    }
 
 }

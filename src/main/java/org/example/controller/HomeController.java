@@ -14,6 +14,7 @@ import org.example.service.SessionService;
 import org.example.service.WeatherService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,7 +30,6 @@ import java.util.List;
 public class HomeController {
 
     private final LocationService locationService;
-    private final SessionService sessionService;
     private final WeatherService weatherService;
 
     //TODO переживаю что этот метод перегружен избыточной логикой!
@@ -38,10 +38,6 @@ public class HomeController {
                                Model model,
                                @ModelAttribute("locationExist") String locationExistMessage)
             throws IOException, InterruptedException {
-
-//        if(sessionId == null) {
-//            sessionService.deleteIfSessionExpired(sessionId);
-//        }
 
         if (locationExistMessage != null && !locationExistMessage.isEmpty()) {
             model.addAttribute("locationExist", locationExistMessage);
@@ -60,7 +56,16 @@ public class HomeController {
 
     @PostMapping
     public String searchLocations(@ModelAttribute @Valid LocationRequestDto location,
-                                  Model model, RedirectAttributes redirectAttributes) throws IOException, InterruptedException {
+                                  BindingResult bindingResult,
+                                  Model model,
+                                  RedirectAttributes redirectAttributes)
+            throws IOException, InterruptedException {
+
+        if(bindingResult.hasErrors()){
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("location", location);
+            return "redirect:/";
+        }
 
         try{
             String locationName = location.getName();

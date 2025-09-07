@@ -62,7 +62,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         return null;
     }
 
-    //TODO тут надо будет добавлять пути по мере добавления
     private boolean isAuthorizationRequired(HttpServletRequest request) {
         String path = request.getRequestURI();
         return path.startsWith("/logout") || path.startsWith("/search");
