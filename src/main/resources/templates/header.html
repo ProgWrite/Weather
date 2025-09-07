@@ -36,7 +36,7 @@
 
 <div class="container">
 
-    <form th:action="@{/}" method="post" class="search-form">
+    <form th:action="@{/search/find}" method="post" class="search-form">
         <div class="form-group">
             <label for="name">Название города:</label>
             <input type="text" id="name" name="name" placeholder="Введите город" th:value="${location?.name}" required>
