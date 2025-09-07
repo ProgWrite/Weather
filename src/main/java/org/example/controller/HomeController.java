@@ -32,7 +32,6 @@ public class HomeController {
     private final LocationService locationService;
     private final WeatherService weatherService;
 
-    //TODO переживаю что этот метод перегружен избыточной логикой!
     @GetMapping("/")
     public String showHomePage(HttpServletRequest request,
                                Model model,

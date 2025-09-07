@@ -28,27 +28,28 @@ public class WeatherService {
     private final static String API_KEY = "b6342efa2a5bf5746f4eb7015b4bd14b";
     private final JsonMapper jsonMapper = new JsonMapper();
 
-
-
-    //TODO может быть разбить метод, подумать об этом
     public List<WeatherResponseDto> findWeather(List<LocationResponseDto> locations) throws IOException, InterruptedException {
-       List<WeatherResponseDto> weathers = new ArrayList<>();
+        List<WeatherResponseDto> weathers = new ArrayList<>();
 
-        for(LocationResponseDto location : locations){
-           String url = buildUrl(location);
-           HttpRequest request = buildHttpRequest(url);
-           HttpClient client = HttpClient.newHttpClient();
-           HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-           String jsonResponse = response.body();
-           JsonNode rootNode = jsonMapper.readTree(jsonResponse);
-           WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode, location.name());
-           weathers.add(weather);
-       }
-        if(weathers.isEmpty()){
-            throw new WeatherNotFoundException("Weathers not found");
+        for (LocationResponseDto location : locations) {
+            WeatherResponseDto weather = buildWeather(location);
+            weathers.add(weather);
         }
         return weathers;
     }
+
+    private WeatherResponseDto buildWeather(LocationResponseDto location) throws IOException, InterruptedException {
+        String url = buildUrl(location);
+        HttpRequest request = buildHttpRequest(url);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String jsonResponse = response.body();
+        JsonNode rootNode = jsonMapper.readTree(jsonResponse);
+        WeatherResponseDto weather = WeatherResponseDto.fromJson(rootNode, location.name());
+        return weather;
+    }
+
+
 
     private String buildUrl(LocationResponseDto locationResponseDto)  {
         String latitude = String.valueOf(locationResponseDto.lat());

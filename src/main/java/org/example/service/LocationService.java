@@ -72,9 +72,6 @@ public class LocationService {
         }
         Long userId = user.getId();
         List<Location> locations = locationRepository.findAllByUserId(userId);
-        if (locations.isEmpty()) {
-            throw new LocationNotFoundException("The location you entered not found. Please try again");
-        }
 
         List<LocationResponseDto> locationResponseDtos =
                 locations.stream()

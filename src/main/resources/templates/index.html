@@ -11,18 +11,6 @@
         <h2> Добро пожаловать на свою страницу, <span th:text="${user.login}"></span></h2>
         <div th:include="header"> </div>
 
-        <form th:action="@{/}" method="post" th:object="${location}">
-
-            <div>
-                <label for="name"></label>
-                <input type="text" id="name" name="name" placeholder="Введите название города"
-                       th:field="*{name}" required>
-            </div>
-
-            <button type="submit">Поиск</button>
-
-        </form>
-
         <div th:if="${locationExist}" style="color: red">
              <p th:text="${locationExist}">Локация уже существует</p>
         </div>

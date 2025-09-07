@@ -36,8 +36,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             System.out.println("hello");
         }
 
+        //TODO проверь все ли нормально (тест с истекшей сессией)
         if(!user.isPresent() && sessionId != null) {
             sessionService.deleteIfSessionExpired(sessionId);
+            Cookie cookie = new Cookie("sessionId", "");
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
         }
 
         if (isAuthorizationRequired(request)) {
