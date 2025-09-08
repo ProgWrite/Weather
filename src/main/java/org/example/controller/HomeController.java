@@ -11,10 +11,8 @@ import org.example.service.LocationService;
 import org.example.service.WeatherService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,15 +46,5 @@ public class HomeController {
         return "index";
     }
 
-
-    //TODO может в Location можно перенести этот метод
-
-    @PostMapping
-    public String deleteLocation(WeatherResponseDto weather,
-                                 HttpServletRequest request){
-        UserResponseDto user = (UserResponseDto) request.getAttribute("user");
-        locationService.delete(weather, user);
-        return "redirect:/";
-    }
 
 }

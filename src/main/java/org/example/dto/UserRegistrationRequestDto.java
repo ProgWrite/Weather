@@ -31,7 +31,7 @@ public class UserRegistrationRequestDto {
     @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ0-9]+$", message = "The password must contain only letters and numbers")
     private String confirmPassword;
 
-    @AssertTrue(message = "Passwords don't match! Please try again")
+    @AssertTrue(message = "Passwords do not match! Please try again")
     public boolean isPasswordsMatch() {
         return  password != null && password.equals(confirmPassword);
     }

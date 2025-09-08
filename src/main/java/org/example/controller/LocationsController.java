@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.LocationRequestDto;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.UserResponseDto;
+import org.example.dto.WeatherResponseDto;
 import org.example.exceptions.LocationExistsException;
 import org.example.exceptions.LocationNotFoundException;
 import org.example.service.LocationService;
@@ -71,6 +72,14 @@ public class LocationsController {
             return "redirect:/";
         }
 
+    }
+
+    @PostMapping("/delete")
+    public String deleteLocation(WeatherResponseDto weather,
+                                 HttpServletRequest request){
+        UserResponseDto user = (UserResponseDto) request.getAttribute("user");
+        locationService.delete(weather, user);
+        return "redirect:/";
     }
 
 }

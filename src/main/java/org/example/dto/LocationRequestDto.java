@@ -13,6 +13,6 @@ import lombok.*;
 public class LocationRequestDto {
 
     @NotBlank(message = "The location name can't be blank")
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ]+$", message = "The location must contain only letters of the English or Russian alphabet")
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\-]+$", message = "The location name must contain only letters (English or Russian) or hyphen")
     String name;
 }
