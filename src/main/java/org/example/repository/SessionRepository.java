@@ -21,14 +21,6 @@ public class SessionRepository {
         return session;
     }
 
-    public void deleteById(UUID id) {
-        sessionFactory.getCurrentSession()
-                .createQuery("DELETE FROM Session WHERE id = :id")
-                .setParameter("id", id)
-                .executeUpdate();
-    }
-
-
     public Optional<Session> findValidById(UUID id) {
         return Optional.ofNullable(
                 sessionFactory.getCurrentSession()
@@ -41,6 +33,13 @@ public class SessionRepository {
                         .setParameter("id", id)
                         .uniqueResult()
         );
+    }
+
+    public void deleteById(UUID id) {
+        sessionFactory.getCurrentSession()
+                .createQuery("DELETE FROM Session WHERE id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
     }
 
 

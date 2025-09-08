@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.LocationResponseDto;
 import org.example.dto.WeatherResponseDto;
-import org.example.exceptions.WeatherNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +25,8 @@ import java.util.List;
 @Slf4j
 public class WeatherService {
 
-    private final static String API_KEY = "b6342efa2a5bf5746f4eb7015b4bd14b";
+    @Value("${openWeatherApiKey}")
+    private String API_KEY;
     private final JsonMapper jsonMapper = new JsonMapper();
 
     public List<WeatherResponseDto> findWeather(List<LocationResponseDto> locations) throws IOException, InterruptedException {

@@ -17,11 +17,11 @@ import org.example.model.User;
 import org.example.repository.LocationRepository;
 import org.example.repository.SessionRepository;
 import org.example.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -36,11 +36,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class LocationService {
 
-    private final static String API_KEY = "b6342efa2a5bf5746f4eb7015b4bd14b";
+    @Value("${openWeatherApiKey}")
+    private String API_KEY;
     private final JsonMapper jsonMapper = new JsonMapper();
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
-    private final SessionRepository sessionRepository;
 
 
     public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
