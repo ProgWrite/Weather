@@ -114,9 +114,9 @@ public class LocationService {
         return false;
     }
 
-
     private String buildUrl(String locationName) {
-        String url = "http://api.openweathermap.org/geo/1.0/direct?q=" + locationName + "&limit=5" + "&appid=" + API_KEY;
+        String url = String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s",
+                locationName, API_KEY);
         return url;
     }
 

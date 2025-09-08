@@ -50,12 +50,11 @@ public class WeatherService {
         return weather;
     }
 
-
-
     private String buildUrl(LocationResponseDto locationResponseDto)  {
         String latitude = String.valueOf(locationResponseDto.lat());
         String longitude = String.valueOf(locationResponseDto.lon());
-        String url = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&appid=" + API_KEY;
+        String url = String.format("https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s",
+                latitude, longitude, API_KEY);
         return url;
     }
 
