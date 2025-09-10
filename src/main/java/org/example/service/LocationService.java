@@ -20,12 +20,16 @@ import org.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,14 +45,15 @@ public class LocationService {
     private final JsonMapper jsonMapper = new JsonMapper();
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+
 
 
     public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
 
         String url = buildUrl(locationName);
         HttpRequest request = buildHttpRequest(url);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         String jsonResponse = response.body();
         List<LocationResponseDto> locations = jsonMapper.readValue(jsonResponse, new TypeReference<List<LocationResponseDto>>() {});
         if(locations.isEmpty()) {
@@ -114,10 +119,14 @@ public class LocationService {
         return false;
     }
 
-    private String buildUrl(String locationName) {
+    private String buildUrl(String locationName) throws UnsupportedEncodingException {
+        String encodedLocationName = URLEncoder.encode(locationName, StandardCharsets.UTF_8);
         String url = String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s",
-                locationName, API_KEY);
+                encodedLocationName, API_KEY);
         return url;
+
+
+
     }
 
     private HttpRequest buildHttpRequest(String url) {
