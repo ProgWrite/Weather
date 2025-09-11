@@ -47,10 +47,7 @@ public class LocationService {
     private final UserRepository userRepository;
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
-
-
     public List<LocationResponseDto> findLocations(String locationName) throws IOException, InterruptedException {
-
         String url = buildUrl(locationName);
         HttpRequest request = buildHttpRequest(url);
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -101,7 +98,6 @@ public class LocationService {
         }
     }
 
-
     private boolean isLocationExists(LocationResponseDto location, UserResponseDto user){
         double latitude = location.lat();
         double longitude = location.lon();
@@ -124,9 +120,6 @@ public class LocationService {
         String url = String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s",
                 encodedLocationName, API_KEY);
         return url;
-
-
-
     }
 
     private HttpRequest buildHttpRequest(String url) {
