@@ -28,7 +28,7 @@ import java.util.Properties;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = RestController.class),
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class)
         }
-        )
+)
 
 
 public class TestAppConfig {

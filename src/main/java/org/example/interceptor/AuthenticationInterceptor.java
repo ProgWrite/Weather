@@ -6,9 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.UserResponseDto;
-import org.example.repository.SessionRepository;
 import org.example.service.SessionService;
-import org.example.service.UserService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -36,7 +34,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             System.out.println("hello");
         }
 
-        if(!user.isPresent() && sessionId != null) {
+        if (!user.isPresent() && sessionId != null) {
             sessionService.deleteIfSessionExpired(sessionId);
             Cookie cookie = new Cookie("sessionId", "");
             cookie.setMaxAge(0);

@@ -36,7 +36,7 @@ public class SessionService {
 
     public Session create(UserAuthorizationRequestDto userAuthorization) {
         User user = userRepository.findByLogin(userAuthorization.getLogin())
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Session session = new Session();
         session.setUser(user);
@@ -46,16 +46,15 @@ public class SessionService {
     }
 
     public void logout(String sessionId) {
-        try{
+        try {
             sessionRepository.deleteById(UUID.fromString(sessionId));
-            log.info("Session deleted with id: {}", sessionId);
-        } catch (RuntimeException exception){
-            throw  new SessionLogoutException("Failed to logout with id " + sessionId);
+        } catch (RuntimeException exception) {
+            throw new SessionLogoutException("Failed to logout with id " + sessionId);
         }
     }
 
     public Optional<UserResponseDto> getUserBySession(String sessionId) {
-        if(sessionId == null || sessionId.isBlank()){
+        if (sessionId == null || sessionId.isBlank()) {
             return Optional.empty();
         }
 
@@ -64,7 +63,7 @@ public class SessionService {
 
             Optional<Session> session = sessionRepository.findValidById(uuid);
             User user = session.get().getUser();
-            if(user == null){
+            if (user == null) {
                 return Optional.empty();
             }
 

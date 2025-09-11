@@ -33,8 +33,8 @@ public class RegistrationController {
     @PostMapping
     public String createUser(@ModelAttribute @Valid UserRegistrationRequestDto user,
                              BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes){
-        if(bindingResult.hasErrors()){
+                             RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("user", user);
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             return "redirect:/sign-up";

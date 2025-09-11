@@ -15,7 +15,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
-                             Object handler) throws Exception {
+                             Object handler){
 
         log.info("[preHandle][" + request + "]" + "[" + request.getMethod()
                 + "]" + request.getRequestURI() + getParameters(request));
@@ -27,7 +27,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response,
                            Object handler,
-                           ModelAndView modelAndView) throws Exception {
+                           ModelAndView modelAndView){
         log.info("[postHandle][" + request + "]");
     }
 
@@ -35,8 +35,8 @@ public class LoggerInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response,
                                 Object handler,
-                                Exception ex) throws Exception {
-        if (ex != null){
+                                Exception ex){
+        if (ex != null) {
             ex.printStackTrace();
         }
         log.info("[afterCompletion][" + request + "][exception: " + ex + "]");
@@ -64,7 +64,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
         }
         String ip = request.getHeader("X-FORWARDED-FOR");
         String ipAddr = (ip == null) ? getRemoteAddr(request) : ip;
-        if (ipAddr!=null && !ipAddr.equals("")) {
+        if (ipAddr != null && !ipAddr.equals("")) {
             posted.append("&_psip=" + ipAddr);
         }
         return posted.toString();

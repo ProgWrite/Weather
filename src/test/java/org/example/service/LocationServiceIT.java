@@ -42,7 +42,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
-
 @ContextConfiguration(classes = TestAppConfig.class)
 @Transactional
 @RequiredArgsConstructor
@@ -77,8 +76,7 @@ public class LocationServiceIT {
         String mockJsonResponse = TestFileUtils.readJsonResponse("response.json");
 
         when(httpResponse.body()).thenReturn(mockJsonResponse);
-        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
-                .thenReturn(httpResponse);
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
 
         List<LocationResponseDto> result = locationService.findLocations("Moscow");
 
@@ -97,8 +95,7 @@ public class LocationServiceIT {
         String mockJsonResponse = "[]";
 
         when(httpResponse.body()).thenReturn(mockJsonResponse);
-        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
-                .thenReturn(httpResponse);
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
 
         assertThrows(LocationNotFoundException.class, () -> {
             locationService.findLocations("Moscow");
@@ -107,11 +104,10 @@ public class LocationServiceIT {
     }
 
     @Test
-    public void shouldAddLocation(){
+    public void shouldAddLocation() {
         List<Location> locations = new ArrayList<>();
-        LocationResponseDto locationResponseDto =
-                new LocationResponseDto("Moscow", 55.75, 37.61, "RU", "RUS");
-        UserResponseDto userDto =  new UserResponseDto(1L,"Dimka");
+        LocationResponseDto locationResponseDto = new LocationResponseDto("Moscow", 55.75, 37.61, "RU", "RUS");
+        UserResponseDto userDto = new UserResponseDto(1L, "Dimka");
         User user = new User(1L, "log", "pass");
 
         when(locationRepository.findAllByUserId(userDto.getId())).thenReturn(locations);
@@ -125,17 +121,16 @@ public class LocationServiceIT {
     }
 
     @Test
-    public void shouldThrowLocationExistsException(){
+    public void shouldThrowLocationExistsException() {
         List<LocationResponseDto> locationsDto = new ArrayList<>();
         List<Location> locations = new ArrayList<>();
-        LocationResponseDto locationResponseDto =
-                new LocationResponseDto("Moscow", 55.75, 37.61, "RU", "RUS");
+        LocationResponseDto locationResponseDto = new LocationResponseDto("Moscow", 55.75, 37.61, "RU", "RUS");
         locationsDto.add(locationResponseDto);
-        for(LocationResponseDto locationDto : locationsDto){
+        for (LocationResponseDto locationDto : locationsDto) {
             Location location = LocationMapper.INSTANCE.toEntity(locationDto);
             locations.add(location);
         }
-        UserResponseDto userDto =  new UserResponseDto(1L,"Dimka");
+        UserResponseDto userDto = new UserResponseDto(1L, "Dimka");
         User user = new User(1L, "log", "pass");
 
         when(locationRepository.findAllByUserId(userDto.getId())).thenReturn(locations);
@@ -153,9 +148,9 @@ public class LocationServiceIT {
 
 
     @Test
-    public void shouldDeleteLocation(){
+    public void shouldDeleteLocation() {
         WeatherResponseDto weather = buildTestWeatherResponseDto();
-        UserResponseDto userDto =  new UserResponseDto(1L,"Dimka");
+        UserResponseDto userDto = new UserResponseDto(1L, "Dimka");
         User user = new User(1L, "log", "pass");
         Location locationToDelete = buildTestLocation(user);
 
@@ -166,18 +161,8 @@ public class LocationServiceIT {
         verify(locationRepository).findAllByUserId(1L);
     }
 
-    private WeatherResponseDto buildTestWeatherResponseDto(){
-        WeatherResponseDto weather = new WeatherResponseDto(
-                "Moscow",
-                55.75,
-                37.61,
-                    "RU",
-                18.0,
-                "Sunny",
-                75.0,
-                20.0,
-                "__"
-        );
+    private WeatherResponseDto buildTestWeatherResponseDto() {
+        WeatherResponseDto weather = new WeatherResponseDto("Moscow", 55.75, 37.61, "RU", 18.0, "Sunny", 75.0, 20.0, "__");
         return weather;
     }
 
@@ -191,8 +176,6 @@ public class LocationServiceIT {
 
         return location;
     }
-
-
 
 
 }

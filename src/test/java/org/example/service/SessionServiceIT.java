@@ -7,7 +7,6 @@ import org.example.config.TestAppConfig;
 import org.example.dto.UserAuthorizationRequestDto;
 import org.example.model.Session;
 import org.example.repository.SessionRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -34,16 +33,16 @@ public class SessionServiceIT {
 
 
     @Test
-    public void shouldCreateSession(){
+    public void shouldCreateSession() {
         UserAuthorizationRequestDto user = new UserAuthorizationRequestDto("Димка", "123");
 
-        Session session =  sessionService.create(user);
+        Session session = sessionService.create(user);
 
         assertNotNull(session);
     }
 
     @Test
-    public void logoutShouldRemoveSession(){
+    public void logoutShouldRemoveSession() {
         UserAuthorizationRequestDto user = new UserAuthorizationRequestDto("Димка", "123");
         Session session = sessionService.create(user);
         assertNotNull(session);
@@ -58,7 +57,7 @@ public class SessionServiceIT {
 
     @Test
     @SneakyThrows
-    void shouldRemoveSessionAfterDurationTime(){
+    void shouldRemoveSessionAfterDurationTime() {
         UserAuthorizationRequestDto user = new UserAuthorizationRequestDto("Димка", "123");
         sessionService.setSessionDuration(Duration.ofSeconds(2));
         Session session = sessionService.create(user);
@@ -71,7 +70,7 @@ public class SessionServiceIT {
 
     @Test
     @SneakyThrows
-    void shouldContinueSession(){
+    void shouldContinueSession() {
         UserAuthorizationRequestDto user = new UserAuthorizationRequestDto("Димка", "123");
         sessionService.setSessionDuration(Duration.ofSeconds(2));
         Session session = sessionService.create(user);

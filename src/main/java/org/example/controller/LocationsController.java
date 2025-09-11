@@ -39,11 +39,11 @@ public class LocationsController {
     public String addLocation(HttpServletRequest request,
                               LocationResponseDto locationResponseDto,
                               RedirectAttributes redirectAttributes) {
-        try{
+        try {
             UserResponseDto user = (UserResponseDto) request.getAttribute("user");
             locationService.addLocation(locationResponseDto, user);
             return "redirect:/";
-        }catch(LocationExistsException exception){
+        } catch (LocationExistsException exception) {
             redirectAttributes.addFlashAttribute("locationExist", exception.getMessage());
             return "redirect:/";
         }
@@ -56,18 +56,18 @@ public class LocationsController {
                                   RedirectAttributes redirectAttributes)
             throws IOException, InterruptedException {
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
             redirectAttributes.addFlashAttribute("location", location);
             return "redirect:/";
         }
 
-        try{
+        try {
             String locationName = location.getName();
             List<LocationResponseDto> locations = locationService.findLocations(locationName);
             model.addAttribute("locations", locations);
             return "search";
-        }catch(LocationNotFoundException exception){
+        } catch (LocationNotFoundException exception) {
             redirectAttributes.addFlashAttribute("locationNotFound", exception.getMessage());
             return "redirect:/";
         }
@@ -76,7 +76,7 @@ public class LocationsController {
 
     @PostMapping("/delete")
     public String deleteLocation(WeatherResponseDto weather,
-                                 HttpServletRequest request){
+                                 HttpServletRequest request) {
         UserResponseDto user = (UserResponseDto) request.getAttribute("user");
         locationService.delete(weather, user);
         return "redirect:/";

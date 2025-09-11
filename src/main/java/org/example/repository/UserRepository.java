@@ -1,6 +1,5 @@
 package org.example.repository;
 
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.exceptions.DatabaseException;
@@ -41,17 +40,17 @@ public class UserRepository {
     }
 
     public Optional<User> findByLogin(String login) {
-       try{
-           Session session = sessionFactory.getCurrentSession();
-           User user = session.createQuery("FROM User WHERE login = :login", User.class)
-                   .setParameter("login", login)
-                   .uniqueResult();
-           log.info("Found user with login{}", login);
-           return Optional.of(user);
-       }catch (RuntimeException e){
-           log.error("Error while finding user with login {}", login, e);
-           throw new DatabaseException("User not found");
-       }
+        try {
+            Session session = sessionFactory.getCurrentSession();
+            User user = session.createQuery("FROM User WHERE login = :login", User.class)
+                    .setParameter("login", login)
+                    .uniqueResult();
+            log.info("Found user with login{}", login);
+            return Optional.of(user);
+        } catch (RuntimeException e) {
+            log.error("Error while finding user with login {}", login, e);
+            throw new DatabaseException("User not found");
+        }
     }
 
 }

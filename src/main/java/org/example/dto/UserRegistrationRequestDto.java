@@ -33,7 +33,7 @@ public class UserRegistrationRequestDto {
 
     @AssertTrue(message = "Passwords do not match! Please try again")
     public boolean isPasswordsMatch() {
-        return  password != null && password.equals(confirmPassword);
+        return password != null && password.equals(confirmPassword);
     }
 
 }

@@ -8,17 +8,13 @@ import org.example.dto.UserResponseDto;
 import org.example.exceptions.UserNotFoundException;
 import org.example.exceptions.WrongPasswordException;
 import org.example.mapper.UserMapper;
-import org.example.model.Session;
 import org.example.model.User;
-import org.example.repository.SessionRepository;
 import org.example.repository.UserRepository;
 import org.example.util.PasswordUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 
 @Service
@@ -51,23 +47,15 @@ public class UserService {
         return false;
     }
 
-
     public void checkPassword(UserAuthorizationRequestDto userAuthorization) {
-        try{
-            if(userAuthorization == null){
-                throw new UserNotFoundException("User not found with login " + userAuthorization.getLogin());
-            }
-            String login = userAuthorization.getLogin();
-            User user = userRepository.findByLogin(login)
-                    .orElseThrow(() -> new UserNotFoundException("User not found"));
-            if(!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())){
-                throw  new WrongPasswordException("Wrong password");
-            }
-        }catch (WrongPasswordException exception){
-            throw exception;
+        if (userAuthorization == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        String login = userAuthorization.getLogin();
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        if (!PasswordUtil.checkPassword(userAuthorization.getPassword(), user.getPassword())) {
+            throw new WrongPasswordException("Wrong password");
         }
     }
-
-
-
 }

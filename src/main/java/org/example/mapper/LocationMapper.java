@@ -28,7 +28,6 @@ public interface LocationMapper {
     LocationResponseDto toDto(Location location);
 
 
-
     default Location toEntityWithUser(LocationResponseDto dto, User user) {
         Location location = toEntity(dto);
         location.setUser(user);

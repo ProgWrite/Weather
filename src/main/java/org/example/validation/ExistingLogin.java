@@ -9,8 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-
-@Constraint(validatedBy = ExistingLoginValidator.class )
+@Constraint(validatedBy = ExistingLoginValidator.class)
 @Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExistingLogin {

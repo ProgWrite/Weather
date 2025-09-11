@@ -15,15 +15,12 @@ import org.example.mapper.LocationMapper;
 import org.example.model.Location;
 import org.example.model.User;
 import org.example.repository.LocationRepository;
-import org.example.repository.SessionRepository;
 import org.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -52,18 +49,19 @@ public class LocationService {
         HttpRequest request = buildHttpRequest(url);
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         String jsonResponse = response.body();
-        List<LocationResponseDto> locations = jsonMapper.readValue(jsonResponse, new TypeReference<List<LocationResponseDto>>() {});
-        if(locations.isEmpty()) {
+        List<LocationResponseDto> locations = jsonMapper.readValue(jsonResponse, new TypeReference<List<LocationResponseDto>>() {
+        });
+        if (locations.isEmpty()) {
             throw new LocationNotFoundException("The location you entered not found. Please try again");
         }
         return locations;
     }
 
-    public void addLocation(LocationResponseDto locationResponseDto, UserResponseDto userDto){
+    public void addLocation(LocationResponseDto locationResponseDto, UserResponseDto userDto) {
         User user = userRepository.findByLogin(userDto.getLogin())
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        if(isLocationExists(locationResponseDto, userDto)){
+        if (isLocationExists(locationResponseDto, userDto)) {
             throw new LocationExistsException("Location already exists with name " + locationResponseDto.name());
         }
 
@@ -73,7 +71,7 @@ public class LocationService {
 
     public List<LocationResponseDto> getAllLocations(UserResponseDto user) {
         if (user == null) {
-            throw new UserNotFoundException("User not found with id " + user.getId());
+            throw new UserNotFoundException("User not found");
         }
         Long userId = user.getId();
         List<Location> locations = locationRepository.findAllByUserId(userId);
@@ -85,20 +83,20 @@ public class LocationService {
         return locationResponseDtos;
     }
 
-    public void delete(WeatherResponseDto weather, UserResponseDto user){
-        if(weather == null){
-            throw new WeatherNotFoundException("Weather not found with name " + weather.name());
+    public void delete(WeatherResponseDto weather, UserResponseDto user) {
+        if (weather == null) {
+            throw new WeatherNotFoundException("Weather not found");
         }
 
         List<LocationResponseDto> locations = getAllLocations(user);
         for (LocationResponseDto location : locations) {
-            if(location.lat() == weather.lat() && location.lon() == weather.lon()){
-               locationRepository.deleteByCoordinates(weather.lat(), weather.lon());
+            if (location.lat() == weather.lat() && location.lon() == weather.lon()) {
+                locationRepository.deleteByCoordinates(weather.lat(), weather.lon());
             }
         }
     }
 
-    private boolean isLocationExists(LocationResponseDto location, UserResponseDto user){
+    private boolean isLocationExists(LocationResponseDto location, UserResponseDto user) {
         double latitude = location.lat();
         double longitude = location.lon();
 
@@ -107,15 +105,15 @@ public class LocationService {
 
 
         List<LocationResponseDto> locations = getAllLocations(user);
-        for(LocationResponseDto locationDto : locations) {
-            if(locationDto.lat() == roundedLatitude && locationDto.lon() == roundedLongitude) {
+        for (LocationResponseDto locationDto : locations) {
+            if (locationDto.lat() == roundedLatitude && locationDto.lon() == roundedLongitude) {
                 return true;
             }
         }
         return false;
     }
 
-    private String buildUrl(String locationName) throws UnsupportedEncodingException {
+    private String buildUrl(String locationName) {
         String encodedLocationName = URLEncoder.encode(locationName, StandardCharsets.UTF_8);
         String url = String.format("http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s",
                 encodedLocationName, API_KEY);

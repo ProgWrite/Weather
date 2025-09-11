@@ -14,7 +14,7 @@ public record WeatherResponseDto(
         double humidity,
         double feelsLike,
         String icon
-        ) {
+) {
 
     private static final double KELVIN_OFFSET = 273.15;
 

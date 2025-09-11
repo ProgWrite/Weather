@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.config.TestAppConfig;
 import org.example.dto.UserRegistrationRequestDto;
 import org.example.dto.UserResponseDto;
-import org.example.exceptions.DatabaseException;
 import org.example.exceptions.UserExistsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,14 +51,14 @@ public class UserServiceIT {
     }
 
     @Test
-    public void shouldExistUser(){
+    public void shouldExistUser() {
         boolean result = userService.existsByLogin(EXISTED_LOGIN);
 
         assertTrue(result);
     }
 
     @Test
-    public void shouldNotExistUser(){
+    public void shouldNotExistUser() {
         boolean result = userService.existsByLogin(NON_EXISTENT_LOGIN);
 
         assertFalse(result);

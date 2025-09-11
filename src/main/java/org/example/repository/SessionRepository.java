@@ -25,11 +25,11 @@ public class SessionRepository {
         return Optional.ofNullable(
                 sessionFactory.getCurrentSession()
                         .createQuery("""
-                    FROM Session s 
-                    JOIN FETCH s.user 
-                    WHERE s.id = :id 
-                    AND s.expiresAt > CURRENT_TIMESTAMP
-                    """, Session.class)
+                                FROM Session s 
+                                JOIN FETCH s.user 
+                                WHERE s.id = :id 
+                                AND s.expiresAt > CURRENT_TIMESTAMP
+                                """, Session.class)
                         .setParameter("id", id)
                         .uniqueResult()
         );
@@ -41,7 +41,6 @@ public class SessionRepository {
                 .setParameter("id", id)
                 .executeUpdate();
     }
-
 
 
 }
