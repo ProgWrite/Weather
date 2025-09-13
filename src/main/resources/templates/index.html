@@ -29,17 +29,17 @@
 
         <div th:unless="${isLoggedIn}">
             <div class="text-center mt-5">
-                <h1>Добро пожаловать в Weather Tracker!</h1>
+                <h1>Welcome to Weather Tracker!</h1>
                 <div class="mt-4">
-                    <a th:href="@{/sign-in}" class="btn btn-primary me-3">Вход</a>
-                    <a th:href="@{/sign-up}" class="btn btn-outline-primary">Регистрация</a>
+                    <a th:href="@{/sign-in}" class="btn btn-primary me-3">Sign in</a>
+                    <a th:href="@{/sign-up}" class="btn btn-outline-primary">Sign up</a>
                 </div>
             </div>
         </div>
 
 
         <div th:if="${isLoggedIn}">
-            <!-- Сообщения об ошибках -->
+
             <div th:if="${locationExist != null and !locationExist.isEmpty()}"
                  class="alert alert-danger alert-dismissible fade show" role="alert">
                 <span th:text="${locationExist}">Локация уже существует</span>
@@ -73,7 +73,7 @@
             </div>
 
 
-            <h3 class="mb-4">Ваши локации:</h3>
+            <h3 class="mb-4">Your locations:</h3>
 
             <div class="row" th:if="${not #lists.isEmpty(weathers)}">
                 <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="weather : ${weathers}">
@@ -103,10 +103,10 @@
                             <h1 class="card-text" th:text="${weather.getTempCelsiusRounded()} + '°C'">0°C</h1>
                             <h3 class="card-title" th:text="${weather.name} + ', ' + ${weather.country}">City, Country</h3>
                             <p class="card-text mb-1">
-                                Ощущается как <span th:text="${weather.getFeelsLikeCelsiusRounded()}">0</span>°C.
+                                Feels like <span th:text="${weather.getFeelsLikeCelsiusRounded()}">0</span>°C.
                                 <span th:text="${weather.description}">Weather description</span>
                             </p>
-                            <p class="card-text mb-1">Влажность: <span th:text="${weather.humidity}">0</span>%</p>
+                            <p class="card-text mb-1">Humidity: <span th:text="${weather.humidity}">0</span>%</p>
                         </div>
                     </div>
                 </div>
@@ -114,8 +114,8 @@
 
 
             <div th:if="${#lists.isEmpty(weathers)}" class="text-center mt-5">
-                <h4>У вас пока нет сохраненных локаций</h4>
-                <p class="text-muted">Начните поиск, чтобы добавить первую локацию</p>
+                <h4>You don't have any saved locations yet.</h4>
+                <p class="text-muted">Start searching to add your first location</p>
             </div>
         </div>
     </div>
