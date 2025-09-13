@@ -28,7 +28,6 @@ public class UserRegistrationRequestDto {
     private String password;
 
     @NotBlank(message = "The password can't be blank")
-    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ0-9]+$", message = "The password must contain only letters and numbers")
     private String confirmPassword;
 
     @AssertTrue(message = "Passwords do not match! Please try again")

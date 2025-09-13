@@ -39,16 +39,10 @@ public class AppConfig implements WebMvcConfigurer {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-
-        configurer.setLocations(
-                new ClassPathResource("secrets.properties"),
-                new ClassPathResource("application.properties")
-        );
-
+        configurer.setLocation(new ClassPathResource("application.properties"));
         configurer.setIgnoreResourceNotFound(false);
         configurer.setIgnoreUnresolvablePlaceholders(false);
         configurer.setLocalOverride(true);
-
         return configurer;
     }
 
